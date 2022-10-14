@@ -1,184 +1,449 @@
-<html lang="en" style="overflow: hidden" class="production js-focus-visible wf-poppins-n4-active wf-poppins-n5-active wf-nunitosans-n6-active wf-nunitosans-n4-active wf-nunitosans-n5-active wf-nunitosans-n7-active wf-poppins-n7-active wf-poppins-n6-active wf-active wf-inconsolata-n7-active wf-inconsolata-n6-active wf-inconsolata-n4-active wf-inconsolata-n5-active wf-playfairdisplay-n5-active wf-playfairdisplay-n7-active wf-playfairdisplay-n6-active wf-playfairdisplay-n4-active wf-cairo-n4-active wf-cairo-n6-active wf-cairo-n7-active wf-lato-n4-active wf-lato-n6-active wf-lato-n5-active wf-lato-n7-active" data-js-focus-visible=""><head><script>var tryingReload = false;
-
-            function isSwSetup(state) {
-                return state === "installing" || state === "activating";
-            }
-
-            window.cleanupReload = function () {
-                if (tryingReload) return;
-                tryingReload = true;
-
-                var performingReload = false;
-                function performReload() {
-                    if (performingReload) return;
-                    performingReload = true;
-                    window.location.reload();
-                }
-
-                if ("serviceWorker" in navigator) {
-                    var sw = navigator.serviceWorker;
-                    if (sw.controller !== null && isSwSetup(sw.controller.state)) {
-                        setTimeout(performReload, 2000);
-                        try {
-                            sw.getRegistrations()
-                                .then(function (rs) {
-                                    for (var i = 0; i < rs.length; i++) {
-                                        rs[i].unregister();
-                                    }
-                                })
-                                .then(performReload)
-                                .catch(performReload);
-                            return;
-                        } catch {}
-                    }
-                }
-
-                performReload();
-            };
-            window.showNetworkRetryButton = function () {
-                const root = document.getElementById("root");
-                if (root !== null) {
-                    root.innerHTML = "";
-                }
-                const r = document.getElementById("reload-area");
-                if (r !== null) {
-                    r.style.display = "flex";
-                } else {
-                    setTimeout(() => window.location.reload(), 20000);
-                }
-            };
-
-            const versionedJavascript = /^\/static\/js\/v[^-]+-(.*)$/;
-            function dropCacheForFile(filename) {
-                const cacheName =
-                    filename === "/" || versionedJavascript.test(filename) ? "runtime-v2" : "same-origin-v2";
-                const jsMatch = versionedJavascript.exec(filename);
-                const cacheKey = jsMatch === null ? filename : "/static/js/" + jsMatch[1];
-                return "caches" in self && self.caches !== undefined
-                    ? self.caches.open(cacheName).then(c => c && c.delete(cacheKey))
-                    : Promise.resolve();
-            }
-
-            window.addEventListener("error", ev => {
-                if (!("filename" in ev) || typeof ev.filename !== "string") return;
-                if (ev.filename.startsWith("/")) void dropCacheForFile(ev.filename);
-                try {
-                    const qualifiedFileURL = new URL(ev.filename);
-                    if (qualifiedFileURL.origin !== window.origin) return;
-                    void dropCacheForFile(qualifiedFileURL.pathname);
-                } catch {}
-            });
-
-            setTimeout(function () {
-                if (window.glidebeacon !== true) {
-                    window.showNetworkRetryButton();
-                }
-            }, 20000);
-
-            if ("serviceWorker" in navigator) {
-                var sw = navigator.serviceWorker;
-                if (sw.controller !== null) {
-                    window.hadEarlySwController = true;
-                    setTimeout(function () {
-                        if (sw.controller === null) return;
-                        if (!isSwSetup(sw.controller.state)) return;
-                        if (window.glidebeacon === true) return;
-
-                        if ("sessionStorage" in window) {
-                            try {
-                                window.sessionStorage.setItem("glide-sw-preboot-error", "yes");
-                            } catch {}
-                        }
-
-                        window.cleanupReload();
-                    }, 4000);
-                }
-            }</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no,user-scalable=no,viewport-fit=cover"><link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAMAAABlApw1AAACi1BMVEX/VyKgsLrfppeyv8n/zE3/zVD/13j/2YPM1t2ZqrW5xc2mtsC/y9P5ZzrPztK4xc6zwcm/y9Kmtb/PzdH/0F3/2Hz2b0b/tGfvf1z/YSn/WCL/1YD/gkL/WCPin4z/WyXYtq7/pl3Z1sb/Xif/0n7/f0D/1H//y3j/tmn/wXH/14H/WSP/ZCv/y3n/1oH/eTv/g0P/WiT/uWv/xHP/z3v/j0z/mlT/pFz/xXT/nFX52Y//k07/fD7/0X3/aC//smbm2LDz2Zrf1rvcrqL/lE//Xyj/ikj/lVCfpq3/2ID/03//qmD/tWj/djn/l1H/Yyr/i0n/bTL/bDL/mFL/Yyv/bjP/w3L/wnL/zVPVvrr/ZSz/ZCz/kEz/znvyd1L/cTXlloD/0Hz/XSaxlZH/vW3/Zy7/x3X/u23/0WH/xnX/ai//kk7/s2b/dDf/iUf/037CiHr7WyjzYTP/gUD/nlf/0X7/v2//gED/1X//aTD/rGD/yXf/oFjm0pX/q2D/iUj/wXD/n1j/YCn/azH/wHD/gUH/tGj/oln/v3D/rWH/ynj/eDr/wnH/zHnf0qeumJX/o1r/bzPIgm//olr/rWLwYjb/uGr/hEP/t2r/eDv/zXr/jkv/2IL/mVP/gkO7joP/umv/14L/mFP5Wyr/kUz/rmP/bzT/ejz/bjT/plz5zl//Zy3/hET/cjX/0nz/pVz/Zi3/u2ytmZf/h0X/kk3/r2T/ez3/xHT/aC7/z3z/fj7/m1Xzz3H/sWX/znz/fT7/ay//iEb/tGb/vm7/nFb/ikf/p16aqLLQfmbPfmb/czf/yHafpaz/YCj/ql//x3bPztGrm5q5j4f/Yiq/ytL5XCv/qV7/fz//azAeoKonAAAE5UlEQVR42u2b93dURRSAL+vb3KDuWlJJSEhMjCmkkBASTEJQQhHpCIgU6QioFHtFsYFi772BXcHee+9g/3P0sFkF2Xk7897snfvOud+ve/ac79ud2Z373i6AIAiCIAiCIAiCIAiCINhl3rNts3pmdH56yS1nRc795cU/XYMH8dED194/MyryM3tKLsJMrOt6j7/9iLaSRlTT/MV61vrDHh2N2ZjWylZ/XDVqcf1wlvqj5l6KujxxGT//B9egAeVzRzHbu11oyPxxnPzndKMxUxnthK0YiGom+hUXYkDaa1gs/34MTDeDQ9KItRiC5hedr58SDEWH61V0Ooakvcmp/xgMzdUu/U9ECyx25z+7zkZA43Rnh+eT0AqjRzoKuActcWOEN0AKJ8eiH9+1F3DrRAcBXWiRK+n9z2ixGVBH/xbcgVYZQ/4GlNsNqF1BHDAWLdNJ61+2xHZAR2S/A9KcTRrQbz/gJtJTkH1/XEIZ0JaDALyTMKA6FwG7CANuzkXAuXT+63Phj7V0ARfkJABXkwXMyE1AL1nAjtwEvEEWsCA3Ac+TBSiH+aLCeLywSK3o//hnZAGqO3lFce8f4nkqw7zU46cpHv6cLGCjwqDQ8/wKUv6ed47i6WvIAlSv8KCgoiDt752pePorbAIyFvzrrwxAsoA+/yWUseA/f+USWu78U6goriw4yF+5ia8gC+jw/5jJUJAX9zzPf4sj7iQLWIWGBVr+uJYsYDeaFej54+UsrqlkkNX0x6fIAs5HkwJdf3yJLGA6GhRo+xNeWFnxpH6Bvn854Q9YVqF2gbY/TiMc6t9H7QJtf+whDGhF44Ks/vgMYUDFctOC7P7fk14bvRvNCrL742TSgO/QqEDD/xHim8ULTAo0/LGf+A7NcI2rDHnpAA1/nEd9k2y+hlQ6gNeF0UFusBvwHHkAbLcZ8BW9P5xnMWDqMAcBGr820w7Y4MIftvXZCmgocxIAr1sKaLkOHFFvJ2DAlT8s6rMRcHGZswD/4VgzoO4dcEh9+ICHXfrDotqwAfeBWyaFDNi413EAtIcLmOXaH1aXhwl4FdwzOUwAh38CNf0cPGAAONAaOKC7iUUAlAQN+JiHv3oyyBLQAFyoDxbwFpuA3kAB69j4Q1lzkIBOPgGq/wL5BrTUMAqYHSDgTeDEQ+YBX7IKqDYPGMkq4DHjgAZW/vCJccAfvAIqGk0DBngFwNumAX8yC/jQNOAvZgF7TAN+ZRYw1jSghlnABv2Ak08Zf+oJ+fsmJFgFTNIJSKmnKWBV0OsfcKj6IDFOAXNUAS98cNVth6kPvgWs1tDQwxhy/LHHHJfvB9uA7Or8lhAYqR8gyetjyET9gH6smJF9cazAwP3oI484agirVz9RYKKeWmysAmJG6gwDzNQZBiSN1KOwhHzVGQYkkibqDAMgEUvqq3MMyHgWUpH6yitgNg+AvjrPeQBM1Bkf5owO1TIPyDwg84DMAzIPyDwQ2Xngh6jPA69FfR64i9888JvJPPD1vezmAdg01IBN/Pxh8359/9s3MwyA33/R9X/8aeDJlm9WTskmP2Xlt1uAM8v8v5GXAXti0RkBFFSq/SshEpQqjhbJUogIiQkZl08CosPSqv/rVy2FaFF8yGZmNT/q74XKqoX5+QurKktBEARBEARBEARBEARBEARBsMnfxg9mxGAM87UAAAAASUVORK5CYII="><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="google-site-verification" content="c_kjzc6ibzAo9F9ILkH8tTMkiY353BxP4pUMrpMhcXM"><meta name="google" content="notranslate"><title>Contacts</title><style>html.development body {
-                color: hotpink;
-            }
-
-            html body {
-                color: #182026;
-            }
-
-            html {
-                font-family: -apple-system-body;
-                height: 100%;
-
-                background-color: #ffffff;
-            }
-
-            @media (prefers-color-scheme: dark) {
-                html {
-                    background-color: #131315;
-                }
-            }
-
-            body {
-                height: 100%;
-                background-color: transparent;
-            }
-
-            #root {
-                height: 100%;
-                height: calc(100% + constant(safe-area-inset-top));
-                height: calc(100% + env(safe-area-inset-top));
-
-                width: 100%;
-
-                position: absolute;
-                left: 0;
-                top: 0;
-            }
-
-            .glide-measure-box {
-                display: flex;
-                align-items: center;
-                width: 500px;
-
-                font-size: 1rem;
-                line-height: 1rem;
-                font-family: sans-serif;
-
-                max-height: unset !important;
-            }
-            .glide-measure-box > span:first-child {
-                display: inline;
-                font-size: 16px;
-                line-height: 16px;
-            }
-
-            .glide-measure-box * {
-                max-height: unset !important;
-            }
-
-            .firebase-emulator-warning {
-                display: none;
-            }</style><link href="https://fonts.googleapis.com/css?family=Roboto+Mono|Roboto:400,500,700,900&amp;display=swap" rel="stylesheet"><link rel="preconnect" href="https://fonts.gstatic.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"><link rel="prefetch" href="/icons/83aa35c22df5931cd844aed687c55994-1.svg" as="image"><link rel="prefetch" href="/icons/9927e5a70a3af56ce116c97e922c8620-1.svg" as="image"><link rel="prefetch" href="/icons/43bc6e0ad72b61589f25eb3352aed025-1.svg" as="image"><link rel="prefetch" href="/icons/0bbbf012fe871a028ccf429d3ff859e0-1.svg" as="image"><link rel="prefetch" href="/icons/2db515e3052db3d7c72af3d6ee183ba6-1.svg" as="image"><link rel="prefetch" href="/icons/51408f0010b4759b814ac5f7f4ccd38a-1.svg" as="image"><link rel="prefetch" href="/icons/b0537ae21c5446a6da78d3f38776053c-1.svg" as="image"><link rel="icon" type="image/png" href="https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/pwa-assets%2FFwwvot0TRl0IS1zZZyU2-favicon-16.png?alt=media" sizes="16x16"><link rel="icon" type="image/png" href="https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/pwa-assets%2FFwwvot0TRl0IS1zZZyU2-favicon-32.png?alt=media" sizes="32x32"><link rel="mask-icon" href="/pinnedTab_icon.svg" color="black"><link rel="preconnect" href="https://firestore.googleapis.com"><link rel="preconnect" href="https://firebasestorage.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com"><script>window.glideEnv="prod";
-            window.glideDeploymentVersion = "867b2d7a5f857be5a8ba6e22fe0526738091cd00";</script><script id="override-cloud-function-location-script">window.overrideCloudFunctionLocation = undefined;</script><script id="profitwell-js" data-pw-auth="0f543b3ce6fded4a25b24d66ec84dbb0"></script><script defer="defer" src="/static/js/v867b2d7a5f857be5a8ba6e22fe0526738091cd00-runtime-main.d9d0d1d9.js"></script><meta name="theme-color" content="#fff"><link rel="manifest" href="/play/Fwwvot0TRl0IS1zZZyU2?manifest"><meta property="og:title" content="Contacts"><meta property="og:image" content="https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/pwa-assets%2FFwwvot0TRl0IS1zZZyU2-icon-512.png?alt=media"><script>window.oauth2RedirectToken = "eyJpdiI6IkdEdGliOG1sQXZoUlBpbytsSmFpclE9PSIsImRhdGEiOiJJWUd3bmV2ckNOU3hwdTRYZTZwdVZWRkxvSUV6SElOUHNPZWpwYzZpSVpEWldkWGx4V1RtZHRJUWtQT1ovU0YxR0pmWWRpb0JMOUdXd2c9PSIsInRhZyI6ImhNbFRxWkNQYWtkZjZXNnZVKzBkMnc9PSJ9";</script><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Contacts"><meta name="twitter:description" content=""><meta name="twitter:image" content="https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/pwa-assets%2FFwwvot0TRl0IS1zZZyU2-icon-512.png?alt=media"><script>window.appLogin = JSON.parse(decodeURIComponent("%7B%22description%22%3A%22%22%2C%22authenticationOptional%22%3Atrue%2C%22iconImage%22%3A%7B%22emoji%22%3A%22%F0%9F%92%A1%22%7D%2C%22shortName%22%3A%22pokhrel1.glideapp.io%22%2C%22features%22%3A%7B%22unifiedApps%22%3Afalse%2C%22quotaOverageSettings%22%3A%7B%22public-users%22%3A0%2C%22airtable-rows-used%22%3A0%2C%22barcodes-scanned%22%3A0%2C%22published-apps%22%3A0%2C%22signatures%22%3A0%2C%22deliver-email%22%3A0%2C%22map-pins%22%3A0%2C%22rows-used%22%3A0%2C%22app-editors%22%3A0%2C%22reloads%22%3A0%2C%22private-users%22%3A0%2C%22updates%22%3A0%2C%22mutate-tables-api%22%3A0%2C%22file-bytes-used%22%3A0%2C%22geocodes%22%3A0%2C%22zaps%22%3A0%7D%2C%22primaryKeyProperties%22%3Afalse%2C%22advancedPro%22%3Afalse%2C%22forceSoftEnforcement%22%3Afalse%2C%22appStoreReview%22%3Afalse%2C%22enableShareScreen%22%3Atrue%2C%22allowRealEmails%22%3Atrue%2C%22authenticationSupportEmailWhitelist%22%3Afalse%2C%22massScanBarcodes%22%3Afalse%2C%22hasMigratedTeamTemplates%22%3Afalse%2C%22adminPanel%22%3Afalse%2C%22nonBlockingButton%22%3Afalse%2C%22addRowToSheet%22%3Afalse%2C%22onChangeAction%22%3Afalse%2C%22alternateUniverseGlide%22%3Afalse%2C%22forceHardEnforcement%22%3Afalse%2C%22hasV3TeamBasedPricing%22%3Atrue%2C%22templateProvenance%22%3A%22none%22%2C%22isV3FreePlan%22%3Afalse%2C%22disableSharing%22%3Afalse%2C%22isWorldCopyable%22%3Afalse%2C%22offlineActionQueue%22%3Afalse%2C%22bigQueryDataSource%22%3Afalse%2C%22emailClient%22%3A%22native-mail%22%2C%22forceAllowTemplateSubmit%22%3Afalse%2C%22usageScreen%22%3Afalse%2C%22ncmPerformanceAnalysis%22%3Afalse%2C%22canAccessSupportCodes%22%3Afalse%2C%22useCustomSignInBackgroundImageInLoading%22%3Afalse%2C%22googleAnalyticsMeasureIDs%22%3A%5B%5D%2C%22previewLiveLinearBarcodeScanner%22%3Afalse%2C%22privateMagicLinks%22%3Afalse%2C%22useNCM%22%3Atrue%2C%22autoApproveTemplate%22%3Afalse%2C%22glidePages%22%3Afalse%2C%22billingVNoneCodePaths%22%3Afalse%2C%22authenticationSupportPassword%22%3Afalse%2C%22copyToClipboardAction%22%3Afalse%2C%22billingVnext%22%3Afalse%2C%22allowAirtableSource%22%3Afalse%2C%22payAsYouGoAddon%22%3Afalse%2C%22canApplyPromoCodes%22%3Atrue%2C%22requirePinForComments%22%3Atrue%2C%22removeBranding%22%3Afalse%2C%22showSignInWithGoogle%22%3Afalse%2C%22isTrialLocked%22%3Afalse%2C%22allowNCMOverWire%22%3Afalse%2C%22emailClientOption%22%3Afalse%2C%22noLegacyActions%22%3Atrue%2C%22unifiedPricing%22%3Atrue%2C%22pagesCustomCss%22%3Afalse%2C%22omitNotifications%22%3Afalse%2C%22canAppUserRequestAccess%22%3Afalse%2C%22shareScreenTitle%22%3A%22%22%2C%22virtualEmailAddresses%22%3Afalse%2C%22defaultTabletMode%22%3Afalse%2C%22unlimitedBarcodeScanning%22%3Afalse%2C%22allowExcelSource%22%3Afalse%2C%22builderTrackingDisableAnalytics%22%3Afalse%7D%2C%22title%22%3A%22Contacts%22%2C%22theme%22%3A%7B%22primaryAccentColor%22%3A%22%23FF5722%22%2C%22requiresAgreement%22%3Afalse%2C%22themeOverlay%22%3A%22none%22%2C%22themeIsAdaptive%22%3Atrue%2C%22policyLinks%22%3A%5B%5D%2C%22showTabLabels%22%3Atrue%7D%2C%22manifest%22%3A%7B%22author%22%3A%22Bibas%20Pokhrel%22%2C%22icons%22%3A%5B%7B%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22any%22%2C%22sizes%22%3A%2216x16%22%2C%22src%22%3A%22https%3A%2F%2Ffirebasestorage.googleapis.com%2Fv0%2Fb%2Fglide-prod.appspot.com%2Fo%2Fpwa-assets%252FFwwvot0TRl0IS1zZZyU2-favicon-16.png%3Falt%3Dmedia%22%7D%2C%7B%22src%22%3A%22https%3A%2F%2Ffirebasestorage.googleapis.com%2Fv0%2Fb%2Fglide-prod.appspot.com%2Fo%2Fpwa-assets%252FFwwvot0TRl0IS1zZZyU2-favicon-32.png%3Falt%3Dmedia%22%2C%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22any%22%2C%22sizes%22%3A%2232x32%22%7D%2C%7B%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22maskable%22%2C%22src%22%3A%22https%3A%2F%2Ffirebasestorage.googleapis.com%2Fv0%2Fb%2Fglide-prod.appspot.com%2Fo%2Fpwa-assets%252FFwwvot0TRl0IS1zZZyU2-maskable-icon-192.png%3Falt%3Dmedia%22%2C%22sizes%22%3A%22192x192%22%7D%2C%7B%22src%22%3A%22https%3A%2F%2Ffirebasestorage.googleapis.com%2Fv0%2Fb%2Fglide-prod.appspot.com%2Fo%2Fpwa-assets%252FFwwvot0TRl0IS1zZZyU2-icon-192.png%3Falt%3Dmedia%22%2C%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22any%22%2C%22sizes%22%3A%22192x192%22%7D%2C%7B%22src%22%3A%22https%3A%2F%2Ffirebasestorage.googleapis.com%2Fv0%2Fb%2Fglide-prod.appspot.com%2Fo%2Fpwa-assets%252FFwwvot0TRl0IS1zZZyU2-maskable-icon-512.png%3Falt%3Dmedia%22%2C%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22maskable%22%2C%22sizes%22%3A%22512x512%22%7D%2C%7B%22src%22%3A%22https%3A%2F%2Ffirebasestorage.googleapis.com%2Fv0%2Fb%2Fglide-prod.appspot.com%2Fo%2Fpwa-assets%252FFwwvot0TRl0IS1zZZyU2-icon-512.png%3Falt%3Dmedia%22%2C%22sizes%22%3A%22512x512%22%2C%22purpose%22%3A%22any%22%2C%22type%22%3A%22image%2Fpng%22%7D%5D%2C%22name%22%3A%22Contacts%22%2C%22description%22%3A%22%22%2C%22start_url%22%3A%22https%3A%2F%2Fgo.glideapps.com%2Fplay%2FFwwvot0TRl0IS1zZZyU2%22%2C%22theme_color%22%3A%22%23ffffff%22%2C%22background_color%22%3A%22%23FF5722%22%2C%22short_name%22%3A%22Contacts%22%2C%22glidePWAAddToHead%22%3A%22%3Clink%20rel%3D%5C%22apple-touch-startup-image%5C%22%20media%3D%5C%22(device-width%3A%20414px)%20and%20(device-height%3A%20896px)%20and%20(-webkit-device-pixel-ratio%3A%203)%5C%22%20href%3D%5C%22https%3A%2F%2Ffirebasestorage.googleapis.com%2Fv0%2Fb%2Fglide-prod.appspot.com%2Fo%2Fpwa-assets%252FFwwvot0TRl0IS1zZZyU2-splash-iPhone%20XS%20Max.png%3Falt%3Dmedia%5C%22%20%2F%3E%3Clink%20rel%3D%5C%22apple-touch-startup-image%5C%22%20media%3D%5C%22(device-width%3A%20375px)%20and%20(device-height%3A%20812px)%20and%20(-webkit-device-pixel-ratio%3A%203)%5C%22%20href%3D%5C%22https%3A%2F%2Ffirebasestorage.googleapis.com%2Fv0%2Fb%2Fglide-prod.appspot.com%2Fo%2Fpwa-assets%252FFwwvot0TRl0IS1zZZyU2-splash-iPhone%20XS.png%3Falt%3Dmedia%5C%22%20%2F%3E%3Clink%20rel%3D%5C%22apple-touch-startup-image%5C%22%20media%3D%5C%22(device-width%3A%20414px)%20and%20(device-height%3A%20896px)%20and%20(-webkit-device-pixel-ratio%3A%202)%5C%22%20href%3D%5C%22https%3A%2F%2Ffirebasestorage.googleapis.com%2Fv0%2Fb%2Fglide-prod.appspot.com%2Fo%2Fpwa-assets%252FFwwvot0TRl0IS1zZZyU2-splash-iPhone%20XR.png%3Falt%3Dmedia%5C%22%20%2F%3E%3Clink%20rel%3D%5C%22apple-touch-startup-image%5C%22%20media%3D%5C%22(device-width%3A%20414px)%20and%20(device-height%3A%20736px)%20and%20(-webkit-device-pixel-ratio%3A%203)%5C%22%20href%3D%5C%22https%3A%2F%2Ffirebasestorage.googleapis.com%2Fv0%2Fb%2Fglide-prod.appspot.com%2Fo%2Fpwa-assets%252FFwwvot0TRl0IS1zZZyU2-splash-iPhone%208%20Plus.png%3Falt%3Dmedia%5C%22%20%2F%3E%3Clink%20rel%3D%5C%22apple-touch-startup-image%5C%22%20media%3D%5C%22(device-width%3A%20375px)%20and%20(device-height%3A%20667px)%20and%20(-webkit-device-pixel-ratio%3A%202)%5C%22%20href%3D%5C%22https%3A%2F%2Ffirebasestorage.googleapis.com%2Fv0%2Fb%2Fglide-prod.appspot.com%2Fo%2Fpwa-assets%252FFwwvot0TRl0IS1zZZyU2-splash-iPhone%208.png%3Falt%3Dmedia%5C%22%20%2F%3E%3Clink%20rel%3D%5C%22apple-touch-startup-image%5C%22%20media%3D%5C%22(device-width%3A%20320px)%20and%20(device-height%3A%20568px)%20and%20(-webkit-device-pixel-ratio%3A%202)%5C%22%20href%3D%5C%22https%3A%2F%2Ffirebasestorage.googleapis.com%2Fv0%2Fb%2Fglide-prod.appspot.com%2Fo%2Fpwa-assets%252FFwwvot0TRl0IS1zZZyU2-splash-iPhone%20SE.png%3Falt%3Dmedia%5C%22%20%2F%3E%3Clink%20rel%3D%5C%22apple-touch-startup-image%5C%22%20media%3D%5C%22(device-width%3A%201024px)%20and%20(device-height%3A%201366px)%20and%20(-webkit-device-pixel-ratio%3A%202)%5C%22%20href%3D%5C%22https%3A%2F%2Ffirebasestorage.googleapis.com%2Fv0%2Fb%2Fglide-prod.appspot.com%2Fo%2Fpwa-assets%252FFwwvot0TRl0IS1zZZyU2-splash-iPad%20Pro%2012.9-inch.png%3Falt%3Dmedia%5C%22%20%2F%3E%3Clink%20rel%3D%5C%22apple-touch-startup-image%5C%22%20media%3D%5C%22(device-width%3A%20834px)%20and%20(device-height%3A%201194px)%20and%20(-webkit-device-pixel-ratio%3A%202)%5C%22%20href%3D%5C%22https%3A%2F%2Ffirebasestorage.googleapis.com%2Fv0%2Fb%2Fglide-prod.appspot.com%2Fo%2Fpwa-assets%252FFwwvot0TRl0IS1zZZyU2-splash-iPad%20Pro%2011-inch.png%3Falt%3Dmedia%5C%22%20%2F%3E%3Clink%20rel%3D%5C%22apple-touch-startup-image%5C%22%20media%3D%5C%22(device-width%3A%20834px)%20and%20(device-height%3A%201112px)%20and%20(-webkit-device-pixel-ratio%3A%202)%5C%22%20href%3D%5C%22https%3A%2F%2Ffirebasestorage.googleapis.com%2Fv0%2Fb%2Fglide-prod.appspot.com%2Fo%2Fpwa-assets%252FFwwvot0TRl0IS1zZZyU2-splash-iPad%20Pro%2010.5-inch.png%3Falt%3Dmedia%5C%22%20%2F%3E%3Clink%20rel%3D%5C%22apple-touch-startup-image%5C%22%20media%3D%5C%22(device-width%3A%20768px)%20and%20(device-height%3A%201024px)%20and%20(-webkit-device-pixel-ratio%3A%202)%5C%22%20href%3D%5C%22https%3A%2F%2Ffirebasestorage.googleapis.com%2Fv0%2Fb%2Fglide-prod.appspot.com%2Fo%2Fpwa-assets%252FFwwvot0TRl0IS1zZZyU2-splash-iPad%209.7-inch%2C%20iPad%20Mini%204.png%3Falt%3Dmedia%5C%22%20%2F%3E%22%2C%22display%22%3A%22standalone%22%7D%2C%22authenticationMethod%22%3A%22public-email-pin%22%2C%22blacklistAppUserIDs%22%3A%5B%5D%2C%22appID%22%3A%22Fwwvot0TRl0IS1zZZyU2%22%2C%22timestamp%22%3A1665764007632%7D"));</script><script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-</script><script>window.appPublishedAt = "2022-10-14T16:12:59.637Z";</script><script>window.glideFeatureSettings = JSON.parse(decodeURIComponent("%7B%22debugActions%22%3Afalse%2C%22newComponentsForNewColumns%22%3Atrue%2C%22emailSharing%22%3Afalse%2C%22developerBroadcastNotifications%22%3Afalse%2C%22logGeocodes%22%3Atrue%2C%22periodicRefresh%22%3Atrue%2C%22serverSizedImages%22%3Atrue%2C%22preTileScreens%22%3Afalse%2C%22unsplash%22%3Atrue%2C%22imageGravity%22%3Atrue%2C%22showMissingEntities%22%3Afalse%2C%22myBilling%22%3Atrue%2C%22orgBillingReminders%22%3Atrue%2C%22flyio%22%3Atrue%2C%22likeComponent%22%3Atrue%2C%22textBox%22%3Atrue%2C%22simpleTable%22%3Atrue%2C%22templateOnboarding%22%3Atrue%2C%22templateSubmit%22%3Atrue%2C%22phoneNumberInBuyScreen%22%3Atrue%2C%22webviewComponent%22%3Atrue%2C%22cloudinaryGifs%22%3Afalse%2C%22driveImageDirect%22%3Atrue%2C%22cloudinaryUploadDrive%22%3Afalse%2C%22durableActionPosting%22%3Atrue%2C%22dragDropColumns%22%3Atrue%2C%22locationEntry%22%3Atrue%2C%22incrementAction%22%3Atrue%2C%22fontThemes%22%3Atrue%2C%22signatureComponent%22%3Atrue%2C%22uglyFingerCursor%22%3Atrue%2C%22tabVisibility%22%3Atrue%2C%22reactionComponent%22%3Atrue%2C%22inYourFaceBranding%22%3Atrue%2C%22useBackendSnapshots%22%3Atrue%2C%22boosts%22%3Atrue%2C%22containingScreenColumns%22%3Atrue%2C%22reloadQuota%22%3Atrue%2C%22directBuilderInteraction%22%3Atrue%2C%22referralLinks%22%3Atrue%2C%22usageScreen%22%3Atrue%2C%22billingVnext%22%3Afalse%2C%22signInAction%22%3Atrue%2C%22nativeTables%22%3Atrue%2C%22attemptiOSPWABackgroundAudio%22%3Afalse%2C%22sideBySide%22%3Afalse%2C%22proxyUploadsViaSameOrigin%22%3Afalse%2C%22signatureQuota%22%3Atrue%2C%22base64EncodeBuilderApp%22%3Afalse%2C%22offsetInSingleValue%22%3Atrue%2C%22cloudFunctionCrossOriginProbability%22%3A0.1%2C%22useBuilderLargeContainer%22%3A0%2C%22useBuilderFunctionsProxy%22%3Atrue%2C%22useFunctionsProxy%22%3Atrue%2C%22traceImageLoadProbability%22%3A0.05%2C%22traceLazyLoadingProbability%22%3A0.05%2C%22eventPicker%22%3Atrue%2C%22compileFormulaToJS%22%3Atrue%2C%22roles%22%3Atrue%2C%22protectedColumns%22%3Atrue%2C%22cleanupFirebaseAuth%22%3Atrue%2C%22supportCodes%22%3Atrue%2C%22addAndSetActions%22%3Atrue%2C%22showFileQuotas%22%3Atrue%2C%22enforceFileQuotas%22%3Atrue%2C%22showPeekABoo%22%3Atrue%2C%22fileTrackingV2Subsystem%22%3Atrue%2C%22fileTrackingV2TrackUploads%22%3Atrue%2C%22fileTrackingV2AutomaticDeletion%22%3Atrue%2C%22useGlideDateTime%22%3Atrue%2C%22exportData%22%3Atrue%2C%22showToastAction%22%3Atrue%2C%22stopwatch%22%3Afalse%2C%22scanCodeAction%22%3Afalse%2C%22playSound%22%3Atrue%2C%22promoCodesGloballyAvailable%22%3Afalse%2C%22allowUserDelete%22%3Atrue%2C%22floatingButton%22%3Atrue%2C%22uploadImageFromConfigurator%22%3Atrue%2C%22mediaLibrary%22%3Afalse%2C%22userAPIFetchColumn%22%3Afalse%2C%22dataEditorColumnSearch%22%3Atrue%2C%22webhookAction%22%3Atrue%2C%22addEditOnSubmitAction%22%3Atrue%2C%22deliverEmailAction%22%3Atrue%2C%22tinderArrayScreen%22%3Atrue%2C%22swipeCondition%22%3Atrue%2C%22liveScanLinearBarcode%22%3Atrue%2C%22requireUserOptInToSaveLogin%22%3Atrue%2C%22allowedEmailsFromUserProfile%22%3Atrue%2C%22multiColumnLayout%22%3Afalse%2C%22formFactorSwitch%22%3Atrue%2C%22inlinePlay%22%3Afalse%2C%22desktopFormFactor%22%3Afalse%2C%22duplicateTab%22%3Atrue%2C%22searchableDropdowns%22%3Atrue%2C%22emailLinkAuth%22%3Atrue%2C%22drilldownCells%22%3Atrue%2C%22columnGrouping%22%3Atrue%2C%22findUsesOfColumn%22%3Atrue%2C%22askForBuilderLockOverride%22%3Afalse%2C%22publishingControl%22%3Atrue%2C%22nativeTableSnapshots%22%3Atrue%2C%22mapTabletLayout%22%3Afalse%2C%22offlineMode%22%3Atrue%2C%22offlineActionQueueForEverybody%22%3Afalse%2C%22copyAllComponents%22%3Atrue%2C%22firestorePersistenceInPWA%22%3Atrue%2C%22readOnlyBuilder%22%3Afalse%2C%22debugLogging%22%3Afalse%2C%22pagesAdvert%22%3Atrue%2C%22allowLocationDataComponents%22%3Afalse%2C%22cloudinaryGlideOnly%22%3Afalse%2C%22unauthenticatedWebhooks%22%3Atrue%2C%22preferAppLoginTokens%22%3Atrue%2C%22cleanupAppLoginTokens%22%3Atrue%2C%22glidePages%22%3Atrue%2C%22manualV2toV3Enabled%22%3Afalse%2C%22v3AnnualPlans%22%3Afalse%2C%22softEnforcementEnabled%22%3Atrue%2C%22hardEnforcementEnabled%22%3Atrue%2C%22paidSoftEnforcementEnabled%22%3Atrue%2C%22paidHardEnforcementEnabled%22%3Atrue%2C%22gettingStartedPromptEnabled%22%3Atrue%2C%22glidePagesSignInWithGoogle%22%3Atrue%2C%22customCodeComponent%22%3Afalse%2C%22wireComponentHighlights%22%3Atrue%2C%22allowExcelSource%22%3Atrue%2C%22allowExcelFileBrowser%22%3Afalse%2C%22allowAirtableSource%22%3Atrue%2C%22formContainer%22%3Atrue%2C%22columnSH%22%3Atrue%2C%22billingVNoneCodePaths%22%3A1%2C%22noDefaultNewAppKind%22%3A0.5%2C%22showPageTemplateSelector%22%3A0.5%2C%22pgMirrorFullyPreliminaryRows%22%3Afalse%2C%22reportThisApp%22%3Afalse%2C%22kanban%22%3Atrue%2C%22legacyNewApp%22%3Atrue%2C%22isV3FreePlan%22%3Atrue%2C%22hasV3TeamBasedPricing%22%3Atrue%2C%22createTemplatesDashboard%22%3Atrue%2C%22pagesChartsComponent%22%3Atrue%2C%22payAsYouGoAddon%22%3Atrue%2C%22buyButtonWithoutStripe%22%3Afalse%2C%22largeAppDescriptions%22%3Atrue%2C%22magicLinkInPinEmail%22%3Atrue%2C%22newAppsAreNCM%22%3Atrue%2C%22processJobPubSub%22%3Afalse%2C%22processReloadPubSub%22%3Afalse%2C%22processBuilderAppPubSub%22%3Afalse%2C%22processPublishedAppPubSub%22%3Afalse%2C%22processPublishedAppDataPubSub%22%3Afalse%2C%22processBuilderActionPubSub%22%3Afalse%2C%22processAddRowToTablePubSub%22%3Afalse%2C%22processSetColumnsInRowPubSub%22%3Afalse%2C%22processDeleteRowPubSub%22%3Afalse%2C%22processNewCommentPubSub%22%3Afalse%2C%22processNewLoginLogPubSub%22%3Afalse%2C%22processDeleteCollectionPubSub%22%3Atrue%2C%22processFileSecurityControlPubSub%22%3Afalse%2C%22activationChecklistProbability%22%3A0.8%2C%22calendarCollection%22%3Atrue%2C%22localTimeZone%22%3Atrue%2C%22privateMagicLinks%22%3Afalse%2C%22forEachContainer%22%3Atrue%2C%22curateBuilderActions%22%3Atrue%2C%22requestFullBodyInEnsureDataLiveliness%22%3Afalse%2C%22throttleFunctionCallStarts%22%3Afalse%2C%22pingBaselineEndpoint%22%3Afalse%2C%22nudgeGmailSignUpWithGAuth%22%3A0.5%2C%22firestorePollingListener%22%3Afalse%2C%22httpDataActionHandling%22%3Afalse%2C%22enforceBigQueryEminence%22%3Afalse%2C%22buyProInBuilder%22%3Atrue%2C%22copyToClipboardButton%22%3Atrue%2C%22transforms%22%3Atrue%2C%22useBuilderSmallContainer%22%3A1%2C%22imagePicker%22%3Atrue%2C%22newComputationModelDataEditor%22%3Atrue%2C%22dateFilters%22%3Atrue%2C%22unifiedChrome%22%3Atrue%2C%22usePlayerSmallContainer%22%3A1%2C%22nonEditComponentsInForms%22%3Atrue%2C%22reloadOnMilestoneChange%22%3Afalse%2C%22allowCommentDeletion%22%3Atrue%2C%22webViewAction%22%3Atrue%2C%22forms%22%3Atrue%2C%22usePlayerCriticalContainer%22%3Atrue%2C%22useFunctionsContainer%22%3A1%2C%22newGoogleSheetsActionQueueProcessor%22%3Atrue%2C%22userProfileColumns%22%3Atrue%2C%22shoppingCart%22%3Atrue%2C%22userProfiles%22%3Atrue%2C%22showSignInWithGoogleOptions%22%3Atrue%2C%22rowOwners%22%3Atrue%2C%22actionEditor%22%3Atrue%2C%22favorite%22%3Atrue%2C%22orgs%22%3Atrue%2C%22deleteRowAction%22%3Atrue%2C%22pieChart%22%3Atrue%2C%22minMaxProgressColumns%22%3Atrue%2C%22filePicker%22%3Atrue%2C%22editDeleteConditions%22%3Atrue%2C%22userProfileColumnsInComponents%22%3Atrue%2C%22undo%22%3Atrue%2C%22orgsUI%22%3Atrue%2C%22virtualEmails%22%3Atrue%2C%22removePagesBetaTag%22%3Atrue%2C%22rowID%22%3Atrue%2C%22dashboardPageTemplates%22%3Atrue%2C%22generateImageColumn%22%3Atrue%2C%22newGlideTableApp%22%3Atrue%2C%22copyPasteComponents%22%3Atrue%2C%22apisForAll%22%3Atrue%2C%22useBrandedEmails%22%3Afalse%2C%22filterInInlineList%22%3Atrue%2C%22mapList%22%3Atrue%2C%22constructURLColumn%22%3Atrue%2C%22linkPicker%22%3Atrue%2C%22buyButton%22%3Atrue%2C%22mapListInline%22%3Atrue%2C%22freeScreens%22%3Atrue%2C%22geoDistanceColumn%22%3Atrue%2C%22showRowData%22%3Atrue%2C%22builderVNext%22%3Atrue%2C%22replaceSpreadsheet%22%3Atrue%2C%22emailFilter%22%3Atrue%2C%22showColumnValues%22%3Atrue%2C%22mutateTablesAPI%22%3Atrue%2C%22useMapBox%22%3Atrue%2C%22nonEditComponentsInEditScreens%22%3Atrue%2C%22reverseList%22%3Atrue%2C%22bulkDataFileUpload%22%3Afalse%2C%22searchInInlineList%22%3Atrue%2C%22progressIndicator%22%3Atrue%2C%22constantRichText%22%3Atrue%2C%22highlightComponents%22%3Atrue%2C%22editScreenColumnAssignments%22%3Atrue%2C%22navigationActions%22%3Atrue%2C%22yesCodeColumn%22%3Atrue%2C%22arrayScreenActions%22%3Atrue%2C%22nonPublishableAppCreation%22%3Atrue%2C%22dateTimeField%22%3Atrue%2C%22userSpecificColumns%22%3Atrue%2C%22joinTexts%22%3Atrue%2C%22zapier%22%3Atrue%2C%22deepLinks%22%3Atrue%2C%22tableInlineList%22%3Atrue%2C%22pro%22%3Atrue%2C%22textTemplate%22%3Atrue%2C%22userProfileColumnAssignments%22%3Atrue%2C%22tableViewer%22%3Atrue%2C%22pushNotifications%22%3Atrue%2C%22leftPanelUpgradeButton%22%3Atrue%2C%22addSheetColumn%22%3Atrue%2C%22addScreenConditions%22%3Atrue%2C%22zapQuota%22%3Atrue%2C%22grouping%22%3Atrue%2C%22splitText%22%3Atrue%2C%22hideComponents%22%3Atrue%2C%22requiredFields%22%3Atrue%7D"));</script><script>window.appID = "Fwwvot0TRl0IS1zZZyU2";</script><script>window.quotaID = "Fwwvot0TRl0IS1zZZyU2";</script><script>window.eminenceFlags = JSON.parse(decodeURIComponent("%7B%22isFreeEminence%22%3Atrue%2C%22isV1Pro%22%3Afalse%2C%22includedWhitelabels%22%3A0%2C%22displayName%22%3A%22Free%22%2C%22needsBuilderModifyAppFeatures%22%3Atrue%2C%22removeBranding%22%3Afalse%2C%22inYourFaceBranding%22%3Afalse%2C%22lowTransactionFees%22%3Afalse%2C%22googleSharedDrive%22%3Afalse%2C%22confirmChangeAuthOnUpgrade%22%3Atrue%2C%22customDomains%22%3Afalse%2C%22isUserMetered%22%3Afalse%2C%22withGrandfathering%22%3Atrue%2C%22automaticRefresh%22%3Afalse%2C%22googleAnalytics%22%3Afalse%2C%22unlimitedZapier%22%3Afalse%2C%22signInAgreements%22%3Afalse%2C%22customSignInAppearance%22%3Afalse%2C%22authenticationSupport%22%3A%7B%22public%22%3Atrue%2C%22publicWithEmail%22%3Atrue%2C%22publicDisabled%22%3Afalse%2C%22password%22%3Atrue%2C%22emailWhitelist%22%3A%22upgrade%22%2C%22userProfiles%22%3A%22upgrade%22%2C%22organizationMembers%22%3Afalse%2C%22justMe%22%3Atrue%2C%22optionalPublicWithEmail%22%3Atrue%2C%22optionalOtherEmail%22%3Afalse%2C%22allowedEmailDomains%22%3Atrue%7D%2C%22upgradeButton%22%3Atrue%2C%22proComponents%22%3Afalse%2C%22proIcons%22%3Afalse%2C%22canDisableShare%22%3Afalse%2C%22buyButton%22%3Atrue%2C%22canUpgrade%22%3Atrue%2C%22canDowngrade%22%3Afalse%2C%22canTransferBetweenUsers%22%3Atrue%2C%22canTransferToOrg%22%3Atrue%2C%22canPausePublish%22%3Afalse%2C%22canUseSignInWithGoogle%22%3Atrue%2C%22downgradeBeforeDelete%22%3Afalse%2C%22logOrgLogin%22%3Afalse%2C%22allowUsersToCopyApp%22%3Atrue%2C%22canSubmitTemplate%22%3Atrue%2C%22needsPublishableOrgToTransfer%22%3Afalse%2C%22transferToOrgAs%22%3A%22free%22%2C%22showQuotaBanners%22%3Atrue%2C%22unlimitedPasswordAndTeamMembersOnlyUsers%22%3Afalse%2C%22proDisplayQuotas%22%3Afalse%2C%22canHaveBoosts%22%3Atrue%2C%22tabletMode%22%3Afalse%2C%22showReportApp%22%3Atrue%2C%22roles%22%3Afalse%2C%22protectedColumns%22%3Afalse%2C%22allowRealEmails%22%3Atrue%2C%22stripeTransactionFeePercentage%22%3A10%2C%22base64EncodePublicUserProfiles%22%3Atrue%2C%22canChangeAuthType%22%3Atrue%2C%22isPrivateProTrial%22%3Afalse%2C%22appLoginsSheet%22%3Atrue%2C%22supportsQuotaUpgrades%22%3Atrue%2C%22maxSingleUploadBytes%22%3A10485760%2C%22quotas%22%3A%7B%22rows-used%22%3A%7B%22prepaidUsage%22%3A500%2C%22maxOverage%22%3A0%7D%2C%22zaps%22%3A%7B%22prepaidUsage%22%3A100%2C%22maxOverage%22%3A0%7D%2C%22reloads%22%3A%7B%22prepaidUsage%22%3A1000%2C%22maxOverage%22%3A0%7D%2C%22signatures%22%3A%7B%22prepaidUsage%22%3A10%2C%22maxOverage%22%3A0%7D%2C%22deliver-email%22%3A%7B%22prepaidUsage%22%3A0%2C%22maxOverage%22%3A0%7D%2C%22file-bytes-used%22%3A%7B%22prepaidUsage%22%3A100000000%2C%22maxOverage%22%3A0%7D%2C%22barcodes-scanned%22%3A%7B%22prepaidUsage%22%3A10%2C%22maxOverage%22%3A0%7D%2C%22map-pins%22%3A%7B%22prepaidUsage%22%3A10%2C%22maxOverage%22%3A0%7D%2C%22private-users%22%3A%7B%22prepaidUsage%22%3A0%2C%22maxOverage%22%3A0%7D%2C%22geocodes%22%3A%7B%22prepaidUsage%22%3A10%2C%22maxOverage%22%3A0%7D%2C%22mutate-tables-api%22%3A%7B%22prepaidUsage%22%3A50%2C%22maxOverage%22%3A0%7D%2C%22public-users%22%3A%7B%22prepaidUsage%22%3A100%2C%22maxOverage%22%3A0%7D%2C%22app-editors%22%3A%7B%22prepaidUsage%22%3A1%2C%22maxOverage%22%3A0%7D%2C%22updates%22%3A%7B%22prepaidUsage%22%3A9007199254740991%2C%22maxOverage%22%3A0%7D%2C%22airtable-rows-used%22%3A%7B%22prepaidUsage%22%3A10%2C%22maxOverage%22%3A0%7D%2C%22published-apps%22%3A%7B%22prepaidUsage%22%3A1000000%2C%22maxOverage%22%3A0%7D%7D%2C%22apiCapabilities%22%3A%7B%22requestReload%22%3Afalse%2C%22mutateTables%22%3Afalse%2C%22queryTables%22%3Afalse%7D%2C%22quotaContext%22%3A%22app%22%2C%22offlineActionQueue%22%3Afalse%2C%22pagesCustomCss%22%3Afalse%2C%22shouldUseNewPrivacy%22%3Afalse%2C%22canAppUserRequestAccess%22%3A%22private%22%2C%22appUserRequestAccessInPrivateProjectsDefault%22%3Atrue%2C%22virtualEmailAddressesInPublicProjectsDefault%22%3Atrue%2C%22bigQuery%22%3Afalse%7D"));</script><script>window.glideQuotaState = JSON.parse(decodeURIComponent("%7B%22geocodes%22%3A%7B%22current%22%3A0%2C%22lastResetAt%22%3A%222022-03-10T23%3A20%3A36.988Z%22%7D%2C%22zaps%22%3A%7B%22limit%22%3A100%2C%22current%22%3A0%2C%22lastResetAt%22%3A%222022-03-10T23%3A20%3A36.988Z%22%7D%2C%22reloads%22%3A%7B%22limit%22%3A1000%2C%22lastResetAt%22%3A%222022-03-10T23%3A20%3A36.988Z%22%2C%22current%22%3A0%7D%2C%22mutate-tables-api%22%3A%7B%22current%22%3A0%2C%22lastResetAt%22%3A%222022-03-10T23%3A20%3A36.988Z%22%7D%2C%22private-users%22%3A%7B%22lastResetAt%22%3A%222022-03-10T23%3A20%3A36.988Z%22%2C%22current%22%3A0%7D%2C%22deliver-email%22%3A%7B%22lastResetAt%22%3A%222022-03-10T23%3A20%3A36.988Z%22%2C%22current%22%3A0%7D%2C%22rows-used%22%3A%7B%22current%22%3A60%2C%22limit%22%3A500%7D%2C%22signatures%22%3A%7B%22current%22%3A0%2C%22lastResetAt%22%3A%222022-03-10T23%3A20%3A36.988Z%22%2C%22limit%22%3A10%7D%2C%22file-bytes-used%22%3A%7B%22current%22%3A0%7D%2C%22barcodes-scanned%22%3A%7B%22current%22%3A0%2C%22lastResetAt%22%3A%222022-03-10T23%3A20%3A36.988Z%22%7D%2C%22map-pins%22%3A%7B%22lastResetAt%22%3A%222022-03-10T23%3A20%3A36.988Z%22%2C%22current%22%3A0%7D%7D"));</script><link rel="preload" href="/icons/4fe97fc9430867046234c9bae4412417-1.svg" as="image"><link rel="preload" href="/icons/9cb10c409213ed5bd8ca50d26977d5dd-1.svg" as="image"><link rel="preload" href="/icons/69b60056d6956a60bc3b82c508dc51ea-1.svg" as="image"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700%7CNunito+Sans:400,500,600,700" media="all"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata:400,500,600,700%7CCairo:400,600,700" media="all"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Playfair+Display:400,500,600,700" media="all"><link rel="stylesheet" href="/fonts/lato/latofonts.css" media="all"><link rel="preload" href="/icons/4431248f1b45369a912f6da7d0ad6034-1.svg" as="image"><style id="_goober"> @keyframes go2264125279{from{transform:scale(0) rotate(45deg);opacity:0;}to{transform:scale(1) rotate(45deg);opacity:1;}}@keyframes go3020080000{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}@keyframes go463499852{from{transform:scale(0) rotate(90deg);opacity:0;}to{transform:scale(1) rotate(90deg);opacity:1;}}@keyframes go1268368563{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}@keyframes go1310225428{from{transform:scale(0) rotate(45deg);opacity:0;}to{transform:scale(1) rotate(45deg);opacity:1;}}@keyframes go651618207{0%{height:0;width:0;opacity:0;}40%{height:0;width:6px;opacity:1;}100%{opacity:1;height:10px;}}@keyframes go901347462{from{transform:scale(0.6);opacity:0.4;}to{transform:scale(1);opacity:1;}}.go4109123758{z-index:9999;}.go4109123758 > *{pointer-events:auto;}</style><style data-styled="active" data-styled-version="5.2.1"></style><link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" href="https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/pwa-assets%2FFwwvot0TRl0IS1zZZyU2-splash-iPhone XS Max.png?alt=media"><link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" href="https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/pwa-assets%2FFwwvot0TRl0IS1zZZyU2-splash-iPhone XS.png?alt=media"><link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)" href="https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/pwa-assets%2FFwwvot0TRl0IS1zZZyU2-splash-iPhone XR.png?alt=media"><link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)" href="https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/pwa-assets%2FFwwvot0TRl0IS1zZZyU2-splash-iPhone 8 Plus.png?alt=media"><link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" href="https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/pwa-assets%2FFwwvot0TRl0IS1zZZyU2-splash-iPhone 8.png?alt=media"><link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" href="https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/pwa-assets%2FFwwvot0TRl0IS1zZZyU2-splash-iPhone SE.png?alt=media"><link rel="apple-touch-startup-image" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)" href="https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/pwa-assets%2FFwwvot0TRl0IS1zZZyU2-splash-iPad Pro 12.9-inch.png?alt=media"><link rel="apple-touch-startup-image" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2)" href="https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/pwa-assets%2FFwwvot0TRl0IS1zZZyU2-splash-iPad Pro 11-inch.png?alt=media"><link rel="apple-touch-startup-image" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2)" href="https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/pwa-assets%2FFwwvot0TRl0IS1zZZyU2-splash-iPad Pro 10.5-inch.png?alt=media"><link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2)" href="https://firebasestorage.googleapis.com/v0/b/glide-prod.appspot.com/o/pwa-assets%2FFwwvot0TRl0IS1zZZyU2-splash-iPad 9.7-inch, iPad Mini 4.png?alt=media"><style data-jss="" data-meta="makeStyles">
-.jss1 {
-  padding: 4px;
-}
-</style><link rel="stylesheet" type="text/css" href="/static/css/2306.779aa8dd.chunk.css"><link rel="stylesheet" type="text/css" href="/static/css/6640.a81f834c.chunk.css"><link rel="stylesheet" type="text/css" href="/static/css/9594.a81f834c.chunk.css"></head><body style="-webkit-overflow-scrolling: auto"><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"><div style="--gv-n0:#FFFFFF; --gv-n0A:rgba(255,255,255,0); --gv-n50:#FAFAFB; --gv-n50A:rgba(55, 77, 88, 0.03); --gv-n100:#F7F7F8; --gv-n100A:rgba(36,56,76,0.05); --gv-n200:#F2F2F3; --gv-n200A:rgba(121,121,131,0.1); --gv-n300:#E8E8EB; --gv-n300A:rgba(121,121,131,0.16); --gv-n400:#E0E0E4; --gv-n400A:rgba(115,116,131,0.22); --gv-n500:#B9B9C1; --gv-n500A:rgba(62,65,86,0.37); --gv-n500AA:#B9B9C1AA; --gv-n600:#92929D; --gv-n600A:rgba(62,65,86,0.58); --gv-n700:#606174; --gv-n700A:rgba(54,55,79,0.8); --gv-n800:#323241; --gv-n800A:rgba(29,29,47,0.92); --gv-n900:#070D10; --gv-b100:rgba(62,116,253,0.1); --gv-b200:rgba(58,101,253,0.15); --gv-b300:rgba(79,118,255,0.5); --gv-b400:#4F5DFF; --gv-b500:#2D3DED; --gv-t100:rgba(0, 156, 166, 0.1); --gv-t200:rgba(0, 156, 166, 0.2); --gv-t300:rgba(0, 156, 166, 0.5); --gv-t400:#009CA6; --gv-t500:#007488; --gv-g100:rgba(0,196,83,0.1); --gv-g200:rgba(0,196,83,0.15); --gv-g300:rgba(0,196,83,0.5); --gv-g400:#00C453; --gv-g500:#00A851; --gv-r100:rgba(255,68,65,0.1); --gv-r200:rgba(255,68,65,0.15); --gv-r300:rgba(255,68,65,0.5); --gv-r400:#FF4441; --gv-r500:#E42723; --gv-y100:rgba(255,185,0,0.1); --gv-y200:rgba(255,185,0,0.15); --gv-y300:rgba(255,185,0,0.5); --gv-y400:#FFB900; --gv-y500:#E78C00; --gv-p100:rgba(212,33,180,0.1); --gv-p200:rgba(212,33,180,0.15); --gv-p300:rgba(212,33,180,0.5); --gv-p400:#D421B4; --gv-p500:#AF008E; --gv-accent:#005844; --gv-component1:#1EDA5B; --gv-component2:#00CD92; --gv-component3:#0076F3; --gv-component4:#6A5EE6; --gv-component5:#B458DB; --gv-component6:#EE389D; --gv-component7:#FF2C6A; --gv-component8:#FF4E4B; --gv-brand-aqua:#12CCE5; --gv-brand-aqua100:rgba(57, 200, 220, 0.1); --gv-brand-aqua200:rgba(57, 200, 220, 0.2); --gv-brand-aqua300:rgba(57, 200, 220, 0.5); --gv-brand-aqua400:#12CCE5; --gv-brand-aqua500:#00BAD7; --gv-brand-lavender:#887EF9; --gv-brand-lavender100:rgba(136, 126, 249, 0.1); --gv-brand-lavender200:rgba(136, 126, 249, 0.2); --gv-brand-lavender300:rgba(136, 126, 249, 0.5); --gv-brand-lavender400:#887EF9; --gv-brand-lavender500:#6F64F0; --gv-brand-gradient:radial-gradient(100% 300% at 0% 100%, #64D851 0%, #16B7B2 50%, #3C5DFF 120%), #00C453; --gv-new-brand1:#17B5CB; --gv-new-brand2:#FF7A56; --gv-new-brand3:#6C62E3; --gv-new-brand4:#007D8E; --gv-new-brand5:#FFB11B; --gv-new-brand6:#7C8AA1; --gv-new-brand7:#EE8BAE; --gv-OSstatus-bar:#fff; --gv-text-dark:#070D10; --gv-text-base:rgba(29,29,47,0.92); --gv-text-pale:rgba(54,55,79,0.8); --gv-text-xpale:rgba(62,65,86,0.58); --gv-text-disabled:rgba(62,65,86,0.37); --gv-text-inverse:#FFFFFF; --gv-text-success:#00A851; --gv-text-warning:#E78C00; --gv-text-danger:#E42723; --gv-text-accent:#2D3DED; --gv-text-contextual-dark:#070D10; --gv-text-contextual-base:rgba(29,29,47,0.92); --gv-text-contextual-pale:rgba(54,55,79,0.8); --gv-text-contextual-xpale:rgba(62,65,86,0.58); --gv-text-contextual-disabled:rgba(62,65,86,0.37); --gv-text-contextual-inverse:#FFFFFF; --gv-text-contextual-success:#00A851; --gv-text-contextual-warning:#E78C00; --gv-text-contextual-danger:#E42723; --gv-text-contextual-accent:#2D3DED; --gv-icon-dark:rgba(29,29,47,0.92); --gv-icon-base:rgba(54,55,79,0.8); --gv-icon-pale:rgba(62,65,86,0.58); --gv-icon-xpale:rgba(62,65,86,0.37); --gv-icon-disabled:rgba(115,116,131,0.22); --gv-icon-inverse:#FFFFFF; --gv-icon-success:#00C453; --gv-icon-warning:#FFB900; --gv-icon-danger:#FF4441; --gv-bg-fronter:#FFFFFF; --gv-bg-front:#FFFFFF; --gv-bg-middle:#F7F7F8; --gv-bg-middle-transparent:rgba(249, 249, 250, 0.82); --gv-bg-back:#F2F2F3; --gv-bg-behind:#E8E8EB; --gv-bg-container-base:#FAFAFB; --gv-bg-container-highlight:#FFFFFF; --gv-bg-hovered:rgba(55, 77, 88, 0.03); --gv-border-dark:rgba(115,116,131,0.22); --gv-border-base:rgba(121,121,131,0.16); --gv-border-pale:rgba(121,121,131,0.1); --gv-border-xpale:rgba(36,56,76,0.05); --gv-separator-color:rgba(121,121,131,0.1); --gv-shadow-soft0:0px 0px 1px rgba(62, 65, 86, 0.25); --gv-shadow-soft1:0px 0px 1px rgba(62, 65, 86, 0.25), 0px 1px 2.5px rgba(62, 65, 86, 0.1); --gv-shadow-soft2:0px 0px 1px rgba(62, 65, 86, 0.25), 0px 4px 8px rgba(62, 65, 86, 0.1); --gv-shadow-soft3:0px 0px 1px rgba(62, 65, 86, 0.25), 0px 6px 12px rgba(62, 65, 86, 0.1); --gv-shadow-soft4:0px 0px 1px rgba(62, 65, 86, 0.25), 0px 12px 24px rgba(62, 65, 86, 0.15); --gv-shadow-soft5:0px 0px 1px rgba(62, 65, 86, 0.25), 0px 12px 24px rgba(62, 65, 86, 0.15); --gv-shadow-soft6:0px 0px 1px rgba(62, 65, 86, 0.25), 0px 12px 24px rgba(62, 65, 86, 0.15); --gv-shadow0:0px 0px 1px rgba(62, 65, 86, 0.25); --gv-shadow1:0px 0px 1px rgba(62, 65, 86, 0.25), 0px 1px 2.5px rgba(62, 65, 86, 0.1); --gv-shadow2:0px 0px 1px rgba(62, 65, 86, 0.25), 0px 4px 8px rgba(62, 65, 86, 0.1); --gv-shadow3:0px 0px 1px rgba(62, 65, 86, 0.25), 0px 6px 12px rgba(62, 65, 86, 0.1); --gv-shadow4:0px 0px 1px rgba(62, 65, 86, 0.25), 0px 12px 24px rgba(62, 65, 86, 0.15); --gv-shadow5:0px 0px 1px rgba(62, 65, 86, 0.25), 0px 12px 24px rgba(62, 65, 86, 0.15); --gv-shadow6:0px 0px 1px rgba(62, 65, 86, 0.25), 0px 12px 24px rgba(62, 65, 86, 0.15); --gv-shadow-dark0:0px 0px 1px rgba(62, 65, 86, 0.375), 0px 0px 1px rgba(62, 65, 86, 0.2); --gv-shadow-dark1:0px 0px 1px rgba(62, 65, 86, 0.375), 0px 1px 2.5px rgba(62, 65, 86, 0.15); --gv-shadow-dark2:0px 0px 1px rgba(62, 65, 86, 0.375), 0px 4px 8px rgba(62, 65, 86, 0.15); --gv-shadow-dark3:0px 0px 1px rgba(62, 65, 86, 0.375), 0px 6px 12px rgba(62, 65, 86, 0.15); --gv-shadow-dark4:0px 0px 1px rgba(62, 65, 86, 0.375), 0px 12px 24px rgba(62, 65, 86, 0.15), 0px 20px 40px rgba(62, 65, 86, 0.1); --gv-shadow-dark5:0px 0px 1px rgba(62, 65, 86, 0.375), 0px 12px 24px rgba(62, 65, 86, 0.2), 0px 20px 40px rgba(62, 65, 86, 0.1); --gv-shadow-dark6:0px 0px 1px rgba(62, 65, 86, 0.375), 0px 12px 24px rgba(62, 65, 86, 0.2), 0px 20px 40px rgba(62, 65, 86, 0.1); --gv-shadow-xdark0:0px 0px 1px rgba(62, 65, 86, 0.5), 0px 0px 1px rgba(62, 65, 86, 0.33); --gv-shadow-xdark1:0px 0px 1px rgba(62, 65, 86, 0.5), 0px 1px 3px rgba(62, 65, 86, 0.33); --gv-shadow-xdark2:0px 0px 1px rgba(62, 65, 86, 0.5), 0px 4px 8px rgba(62, 65, 86, 0.33); --gv-shadow-xdark3:0px 0px 1px rgba(62, 65, 86, 0.5), 0px 6px 12px rgba(62, 65, 86, 0.33); --gv-shadow-xdark4:0px 0px 1px rgba(62, 65, 86, 0.5), 0px 12px 24px rgba(62, 65, 86, 0.33), 0px 20px 40px rgba(62, 65, 86, 0.1); --gv-shadow-xdark5:0px 0px 1px rgba(62, 65, 86, 0.5), 0px 12px 24px rgba(62, 65, 86, 0.33), 0px 20px 40px rgba(62, 65, 86, 0.1); --gv-shadow-xdark6:0px 0px 1px rgba(62, 65, 86, 0.5), 0px 12px 24px rgba(62, 65, 86, 0.33), 0px 20px 40px rgba(62, 65, 86, 0.1); --gv-shadow-panels-color:rgba(49, 49, 57, 0.05); --gv-shadow-panels-color-darker:rgba(0, 0, 0, 0.08); --gv-transition-base:0.125s ease; --gv-transition-slow:0.25s ease; --gv-transition-fast:0.1s ease;"><div class="sc-cTkwdZ fFvlhF"><div style="--gv-n0A:rgba(255, 255, 255, 0); --gv-n100:#F6F6F6; --gv-n100A:rgba(121, 121, 121, 0.06); --gv-n200:#F2F2F2; --gv-n200A:rgba(121, 121, 121, 0.1); --gv-n300:#E8E8E8; --gv-n300A:rgba(121, 121, 121, 0.16); --gv-n400:#E1E1E1; --gv-n400A:rgba(116, 116, 116, 0.22); --gv-n500:#B9B9B9; --gv-n500A:rgba(65, 65, 65, 0.37); --gv-n500AA:#B9B9B9AA; --gv-n600:#999999; --gv-n600A:rgba(45, 45, 45, 0.58); --gv-n700:#555555; --gv-n700A:rgba(35, 35, 35, 0.8); --gv-n800:#111111; --gv-n800A:rgba(29, 29, 29, 0.92); --gv-n900:#000000; --gv-accent:#FF5722; --gv-text-dark:#000000; --gv-text-base:#111111; --gv-text-pale:#555555; --gv-text-xpale:#999999; --gv-text-disabled:#B9B9B9; --gv-text-contextual-dark:#000000; --gv-text-contextual-base:rgba(29, 29, 29, 0.92); --gv-text-contextual-pale:rgba(35, 35, 35, 0.8); --gv-text-contextual-xpale:rgba(45, 45, 45, 0.58); --gv-text-contextual-disabled:rgba(65, 65, 65, 0.37); --gv-icon-dark:#111111; --gv-icon-base:#555555; --gv-icon-pale:#999999; --gv-icon-xpale:#B9B9B9; --gv-icon-disabled:#E1E1E1; --gv-bg-middle:#F6F6F6; --gv-bg-back:#F2F2F2; --gv-bg-behind:#E8E8E8; --gv-border-dark:rgba(116, 116, 116, 0.22); --gv-border-base:rgba(121, 121, 121, 0.16); --gv-border-pale:rgba(121, 121, 121, 0.1); --gv-border-xpale:rgba(121, 121, 121, 0.06); --gv-separator-color:rgba(0, 0, 0, 0.12); --gv-shadow-soft0:0px 1px 0px rgba(62, 65, 86, 0.04); --gv-shadow-soft2:0px 6px 12px rgba(62, 65, 86, 0.1); --gv-shadow-soft3:0px 10px 20px rgba(62, 65, 86, 0.1); --gv-shadow-soft4:0px 24px 48px rgba(62, 65, 86, 0.1); --gv-shadow0:0px 1px 0px rgba(62, 65, 86, 0.06); --gv-shadow1:0px 0px 0px 1px rgba(62, 65, 86, 0.06), 0px 1px 3px rgba(62, 65, 86, 0.08); --gv-shadow2:0px 0px 0px 1px rgba(62, 65, 86, 0.06), 0px 6px 12px rgba(62, 65, 86, 0.08); --gv-shadow3:0px 0px 1px 1px rgba(62, 65, 86, 0.06), 0px 10px 20px rgba(62, 65, 86, 0.08); --gv-shadow4:0px 0px 1px 1px rgba(62, 65, 86, 0.06), 0px 24px 48px rgba(62, 65, 86, 0.08); --gv-shadow-dark0:0px 1px 0px rgba(62, 65, 86, 0.12); --gv-shadow-dark1:0px 1px 1px rgba(0, 0, 0, 0.06), 0px 0px 0px 1px rgba(62, 65, 86, 0.08), 0px 1px 3px rgba(62, 65, 86, 0.08); --gv-shadow-dark2:0px 0px 0px 1px rgba(62, 65, 86, 0.08), 0px 2px 4px rgba(0, 0, 0, 0.06), 0px 6px 12px rgba(62, 65, 86, 0.08); --gv-shadow-dark3:0px 0px 0px 1px rgba(62, 65, 86, 0.08), 0px 3px 6px rgba(0, 0, 0, 0.06), 0px 10px 20px rgba(62, 65, 86, 0.1); --gv-shadow-dark4:0px 0px 0px 1px rgba(62, 65, 86, 0.08), 0px 4px 8px rgba(0, 0, 0, 0.06), 0px 24px 48px rgba(62, 65, 86, 0.12); --gv-shadow-xdark0:0px 1px 0px rgba(62, 65, 86, 0.25); --gv-shadow-xdark1:0px 1px 1px rgba(0, 0, 0, 0.06), 0px 0px 0px 1px rgba(62, 65, 86, 0.08), 0px 1px 3px rgba(62, 65, 86, 0.25); --gv-shadow-xdark2:0px 0px 0px 1px rgba(62, 65, 86, 0.08), 0px 2px 4px rgba(0, 0, 0, 0.06), 0px 4px 12px rgba(62, 65, 86, 0.25); --gv-shadow-xdark3:0px 0px 0px 1px rgba(62, 65, 86, 0.08), 0px 3px 6px rgba(0, 0, 0, 0.06), 0px 10px 20px rgba(62, 65, 86, 0.25); --gv-shadow-xdark4:0px 6px 12px rgba(0, 0, 0, 0.06), 0px 0px 0px 1px rgba(62, 65, 86, 0.08), 0px 24px 48px rgba(62, 65, 86, 0.25);"><div scale="1" class="sc-citwmv dQGjBq"><div class="sc-iJuUWI iWDXRP"><div id="app-root" class="sc-giIncl eyiJTo player"><div><div data-test="glide-app-bar" class="sc-kiYtDG hHXUGS"><div class="sc-jtHMlw bBiENz"></div><div class="sc-httYMd cZtuMV"><div class="sc-cbDGPM bpLgxK"><div class="sc-hjWSAi gFzkmr"><div class="sc-dUrnRO bLoUbq">Calendar</div></div><div data-test="app-search-bar" class="sc-gGTGfU fHWMmS"><div class="sc-iumJyn MjyFT"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.29248 14.8877C9.67871 14.8877 10.957 14.4395 12.0029 13.6924L15.9375 17.627C16.1201 17.8096 16.3608 17.9009 16.6182 17.9009C17.1577 17.9009 17.5396 17.4858 17.5396 16.9546C17.5396 16.7056 17.4565 16.4648 17.2739 16.2905L13.3643 12.3726C14.186 11.2935 14.6758 9.95703 14.6758 8.50439C14.6758 4.99316 11.8037 2.12109 8.29248 2.12109C4.78955 2.12109 1.90918 4.98486 1.90918 8.50439C1.90918 12.0156 4.78125 14.8877 8.29248 14.8877ZM8.29248 13.5098C5.55322 13.5098 3.28711 11.2437 3.28711 8.50439C3.28711 5.76514 5.55322 3.49902 8.29248 3.49902C11.0317 3.49902 13.2979 5.76514 13.2979 8.50439C13.2979 11.2437 11.0317 13.5098 8.29248 13.5098Z"></path></svg><input aria-label="Search" role="search" placeholder="Search" class="sc-dcwrBW eBgIlv" value=""></div></div></div></div><div class="sc-eltcbb iORAaW"><div class="sc-fHYxKZ dddLzV nav-bar-root" data-test="nav-bar" role="navigation"><div class="sc-irlOZD jUdyne"><div aria-hidden="true" tabindex="-1" class="sc-dwcuIR jktQCG"><div class="sc-iGctRS fpSvqg"></div></div><button data-test="nav-button-Share" aria-label="Share" class="sc-gyUeRy fpZbxg"><div class="sc-bdfBwQ hzVpbP" size="24" color="currentColor"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><use xlink:href="/icons/43bc6e0ad72b61589f25eb3352aed025-1.svg#Bold"></use></svg></div></button></div><h1 opacity="1" aria-label="Calendar" class="sc-fWPcDo kWstTN">Calendar</h1><div class="sc-flMoUE ciwbCw"><div aria-hidden="true" tabindex="-1" class="sc-dwcuIR jktQCG"><button data-test="nav-button-Share" aria-label="Share" class="sc-gyUeRy fpZbxg"><div class="sc-bdfBwQ hzVpbP" size="24" color="currentColor"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><use xlink:href="/icons/43bc6e0ad72b61589f25eb3352aed025-1.svg#Bold"></use></svg></div></button></div><div class="sc-iGctRS fpSvqg"></div></div></div></div></div><div class="sc-iIEYCM dQOubi"><div class="sc-bSFVuW jsTgam"><div class="sc-jvfriV bQHGPR"><div id="OverlayscreenScrollView8b412e650bf8021cc4173179cc6fd5ca" class="sc-edoZmE hyACfo"><div id="OverlayscreenScrollView8b412e650bf8021cc4173179cc6fd5cafab-target" class="fab-target"></div></div></div><div id="screenScrollView8b412e650bf8021cc4173179cc6fd5ca" class="sc-jlIkXa dglOQg"><div class="sc-iWRGeL gSuGVQ focused"><div><div data-test="app-vertical-list" class="sc-ljwYwh kdZtzk"><div class="vlist___StyledDiv2-sc-189vl36-1 gJBIOH"><div style="height: 320px;"></div><div class="vlist___StyledDiv3-sc-189vl36-2 fXTQVx" style="padding-top: 0px;"><div data-index="0" class="vlist___StyledDiv-sc-189vl36-0 eSgXlM" style="height: 64px;"><div class="inner"><div role="row"><div role="cell"><div data-test="list-item" class="sc-iRpACI gSyeKx takes-long-press interactive separator selected-item-list-item-3b0447b9b4ee7a7b46469b831606635a"><div class="list-item-view___StyledDiv-dh62pm-0 fCPmrN emojiImageStyle"></div><div class="textContainer"><div id="list-item-lf-Monday" data-test="list-item-title" dir="auto" class="textStyle topItem"></div><label for="list-item-lf-Monday" data-test="list-item-subtitle" dir="auto" class="textDetailStyle">Monday</label></div><div class="navigationIcon"><div class="sc-bdfBwQ dmeAKD" size="12" color="currentColor"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><use xlink:href="/icons/da0c62eb81e89853c0ad7e18f8c8c1cf-1.svg#Bold"></use></svg></div></div></div></div></div></div></div><div data-index="1" class="vlist___StyledDiv-sc-189vl36-0 eSgXlM" style="height: 64px;"><div class="inner"><div role="row"><div role="cell"><div data-test="list-item" class="sc-iRpACI gSyeKx takes-long-press interactive separator selected-item-list-item-1bfcbfe6dcc187f198e0573e2c347df6"><div class="list-item-view___StyledDiv-dh62pm-0 fCPmrN emojiImageStyle"></div><div class="textContainer"><div id="list-item-lf-Tuesday" data-test="list-item-title" dir="auto" class="textStyle topItem"></div><label for="list-item-lf-Tuesday" data-test="list-item-subtitle" dir="auto" class="textDetailStyle">Tuesday</label></div><div class="navigationIcon"><div class="sc-bdfBwQ dmeAKD" size="12" color="currentColor"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><use xlink:href="/icons/da0c62eb81e89853c0ad7e18f8c8c1cf-1.svg#Bold"></use></svg></div></div></div></div></div></div></div><div data-index="2" class="vlist___StyledDiv-sc-189vl36-0 eSgXlM" style="height: 64px;"><div class="inner"><div role="row"><div role="cell"><div data-test="list-item" class="sc-iRpACI gSyeKx takes-long-press interactive separator selected-item-list-item-6b2acd4577e5bece6d48357d0295243a"><div class="list-item-view___StyledDiv-dh62pm-0 fCPmrN emojiImageStyle"></div><div class="textContainer"><div id="list-item-lf-Wednesday" data-test="list-item-title" dir="auto" class="textStyle topItem"></div><label for="list-item-lf-Wednesday" data-test="list-item-subtitle" dir="auto" class="textDetailStyle">Wednesday</label></div><div class="navigationIcon"><div class="sc-bdfBwQ dmeAKD" size="12" color="currentColor"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><use xlink:href="/icons/da0c62eb81e89853c0ad7e18f8c8c1cf-1.svg#Bold"></use></svg></div></div></div></div></div></div></div><div data-index="3" class="vlist___StyledDiv-sc-189vl36-0 eSgXlM" style="height: 64px;"><div class="inner"><div role="row"><div role="cell"><div data-test="list-item" class="sc-iRpACI gSyeKx takes-long-press interactive separator selected-item-list-item-0e9f29c313f96b059d90b3d3cfdde27b"><div class="list-item-view___StyledDiv-dh62pm-0 fCPmrN emojiImageStyle"></div><div class="textContainer"><div id="list-item-lf-Thursday" data-test="list-item-title" dir="auto" class="textStyle topItem"></div><label for="list-item-lf-Thursday" data-test="list-item-subtitle" dir="auto" class="textDetailStyle">Thursday</label></div><div class="navigationIcon"><div class="sc-bdfBwQ dmeAKD" size="12" color="currentColor"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><use xlink:href="/icons/da0c62eb81e89853c0ad7e18f8c8c1cf-1.svg#Bold"></use></svg></div></div></div></div></div></div></div><div data-index="4" class="vlist___StyledDiv-sc-189vl36-0 eSgXlM" style="height: 64px;"><div class="inner"><div role="row"><div role="cell"><div data-test="list-item" class="sc-iRpACI gSyeKx takes-long-press interactive separator selected-item-list-item-4c946dc89fa63d3defd5aad08ff39e5a"><div class="list-item-view___StyledDiv-dh62pm-0 fCPmrN emojiImageStyle"></div><div class="textContainer"><div id="list-item-lf-Friday" data-test="list-item-title" dir="auto" class="textStyle topItem"></div><label for="list-item-lf-Friday" data-test="list-item-subtitle" dir="auto" class="textDetailStyle">Friday</label></div><div class="navigationIcon"><div class="sc-bdfBwQ dmeAKD" size="12" color="currentColor"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><use xlink:href="/icons/da0c62eb81e89853c0ad7e18f8c8c1cf-1.svg#Bold"></use></svg></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div><div id="tabBar" class="sc-hJJQhR jVpDFq visible phone"><div class="tbs-inner" role="navigation"><button aria-label="Calendar" role="tab" class="sc-exiMuG guIglA"><div class="sc-eishCr czvhXY"><div class="sc-bdfBwQ hzVpbP" size="24" color="currentColor"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><use xlink:href="/icons/4fe97fc9430867046234c9bae4412417-1.svg#Bold"></use></svg></div><div class="sc-hYAvag egzcuD">Calendar</div></div></button><button aria-label="Assignment" role="tab" class="sc-exiMuG jceRoS"><div class="sc-eishCr czvhXY"><div class="sc-bdfBwQ hzVpbP" size="24" color="currentColor"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><use xlink:href="/icons/9cb10c409213ed5bd8ca50d26977d5dd-1.svg#Bold"></use></svg></div><div class="sc-hYAvag egzcuD">Assignment</div></div></button><button aria-label="Contacts" role="tab" class="sc-exiMuG jceRoS"><div class="sc-eishCr czvhXY"><div class="sc-bdfBwQ hzVpbP" size="24" color="currentColor"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><use xlink:href="/icons/69b60056d6956a60bc3b82c508dc51ea-1.svg#Bold"></use></svg></div><div class="sc-hYAvag egzcuD">Contacts</div></div></button><button aria-label="Notes and Files" role="tab" class="sc-exiMuG jceRoS"><div class="sc-eishCr czvhXY"><div class="sc-bdfBwQ hzVpbP" size="24" color="currentColor"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><use xlink:href="/icons/4431248f1b45369a912f6da7d0ad6034-1.svg#Bold"></use></svg></div><div class="sc-hYAvag egzcuD">Notes and Files</div></div></button></div></div></div><div class="sc-kLgntA iHaOcn"><div id="push-modal-root" class="sc-ezrdKe bAYFRD"></div></div><div class="sc-bYEvPH khGBIg"><div id="app-modal-root" class="sc-ezrdKe bAYFRD"></div></div><div class="sc-iktFzd gaGeRK"><div id="flyout-root" class="sc-ezrdKe bAYFRD"></div></div></div></div></div></div></div></div></div><div id="portal" style="--gv-n0:#FFFFFF; --gv-n0A:rgba(255, 255, 255, 0); --gv-n50:#FAFAFB; --gv-n50A:rgba(55, 77, 88, 0.03); --gv-n100:#F6F6F6; --gv-n100A:rgba(121, 121, 121, 0.06); --gv-n200:#F2F2F2; --gv-n200A:rgba(121, 121, 121, 0.1); --gv-n300:#E8E8E8; --gv-n300A:rgba(121, 121, 121, 0.16); --gv-n400:#E1E1E1; --gv-n400A:rgba(116, 116, 116, 0.22); --gv-n500:#B9B9B9; --gv-n500A:rgba(65, 65, 65, 0.37); --gv-n500AA:#B9B9B9AA; --gv-n600:#999999; --gv-n600A:rgba(45, 45, 45, 0.58); --gv-n700:#555555; --gv-n700A:rgba(35, 35, 35, 0.8); --gv-n800:#111111; --gv-n800A:rgba(29, 29, 29, 0.92); --gv-n900:#000000; --gv-b100:rgba(62,116,253,0.1); --gv-b200:rgba(58,101,253,0.15); --gv-b300:rgba(79,118,255,0.5); --gv-b400:#4F5DFF; --gv-b500:#2D3DED; --gv-t100:rgba(0, 156, 166, 0.1); --gv-t200:rgba(0, 156, 166, 0.2); --gv-t300:rgba(0, 156, 166, 0.5); --gv-t400:#009CA6; --gv-t500:#007488; --gv-g100:rgba(0,196,83,0.1); --gv-g200:rgba(0,196,83,0.15); --gv-g300:rgba(0,196,83,0.5); --gv-g400:#00C453; --gv-g500:#00A851; --gv-r100:rgba(255,68,65,0.1); --gv-r200:rgba(255,68,65,0.15); --gv-r300:rgba(255,68,65,0.5); --gv-r400:#FF4441; --gv-r500:#E42723; --gv-y100:rgba(255,185,0,0.1); --gv-y200:rgba(255,185,0,0.15); --gv-y300:rgba(255,185,0,0.5); --gv-y400:#FFB900; --gv-y500:#E78C00; --gv-p100:rgba(212,33,180,0.1); --gv-p200:rgba(212,33,180,0.15); --gv-p300:rgba(212,33,180,0.5); --gv-p400:#D421B4; --gv-p500:#AF008E; --gv-accent:#FF5722; --gv-component1:#1EDA5B; --gv-component2:#00CD92; --gv-component3:#0076F3; --gv-component4:#6A5EE6; --gv-component5:#B458DB; --gv-component6:#EE389D; --gv-component7:#FF2C6A; --gv-component8:#FF4E4B; --gv-brand-aqua:#12CCE5; --gv-brand-aqua100:rgba(57, 200, 220, 0.1); --gv-brand-aqua200:rgba(57, 200, 220, 0.2); --gv-brand-aqua300:rgba(57, 200, 220, 0.5); --gv-brand-aqua400:#12CCE5; --gv-brand-aqua500:#00BAD7; --gv-brand-lavender:#887EF9; --gv-brand-lavender100:rgba(136, 126, 249, 0.1); --gv-brand-lavender200:rgba(136, 126, 249, 0.2); --gv-brand-lavender300:rgba(136, 126, 249, 0.5); --gv-brand-lavender400:#887EF9; --gv-brand-lavender500:#6F64F0; --gv-brand-gradient:radial-gradient(100% 300% at 0% 100%, #64D851 0%, #16B7B2 50%, #3C5DFF 120%), #00C453; --gv-new-brand1:#17B5CB; --gv-new-brand2:#FF7A56; --gv-new-brand3:#6C62E3; --gv-new-brand4:#007D8E; --gv-new-brand5:#FFB11B; --gv-new-brand6:#7C8AA1; --gv-new-brand7:#EE8BAE; --gv-new-brand-gradient:linear-gradient(90deg, #12CCE5 25.62%, #887EF9 74.07%);; --gv-OSstatus-bar:#fff; --gv-text-dark:#000000; --gv-text-base:#111111; --gv-text-pale:#555555; --gv-text-xpale:#999999; --gv-text-disabled:#B9B9B9; --gv-text-inverse:#FFFFFF; --gv-text-success:#00A851; --gv-text-warning:#E78C00; --gv-text-danger:#E42723; --gv-text-accent:#2D3DED; --gv-text-contextual-dark:#000000; --gv-text-contextual-base:rgba(29, 29, 29, 0.92); --gv-text-contextual-pale:rgba(35, 35, 35, 0.8); --gv-text-contextual-xpale:rgba(45, 45, 45, 0.58); --gv-text-contextual-disabled:rgba(65, 65, 65, 0.37); --gv-text-contextual-inverse:#FFFFFF; --gv-text-contextual-success:#00A851; --gv-text-contextual-warning:#E78C00; --gv-text-contextual-danger:#E42723; --gv-text-contextual-accent:#2D3DED; --gv-icon-dark:#111111; --gv-icon-base:#555555; --gv-icon-pale:#999999; --gv-icon-xpale:#B9B9B9; --gv-icon-disabled:#E1E1E1; --gv-icon-inverse:#FFFFFF; --gv-icon-success:#00C453; --gv-icon-warning:#FFB900; --gv-icon-danger:#FF4441; --gv-bg-fronter:#FFFFFF; --gv-bg-front:#FFFFFF; --gv-bg-middle:#F6F6F6; --gv-bg-middle-transparent:rgba(249, 249, 250, .82); --gv-bg-back:#F2F2F2; --gv-bg-behind:#E8E8E8; --gv-bg-container-base:#FAFAFB; --gv-bg-container-highlight:#FFFFFF; --gv-bg-hovered:rgba(55, 77, 88, 0.03); --gv-border-dark:rgba(116, 116, 116, 0.22); --gv-border-base:rgba(121, 121, 121, 0.16); --gv-border-pale:rgba(121, 121, 121, 0.1); --gv-border-xpale:rgba(121, 121, 121, 0.06); --gv-separator-color:rgba(0, 0, 0, 0.12); --gv-shadow-soft0:0px 1px 0px rgba(62, 65, 86, 0.04); --gv-shadow-soft1:box-shadow: 0px 1px 3px rgba(62, 65, 86, 0.08);; --gv-shadow-soft2:0px 6px 12px rgba(62, 65, 86, 0.1); --gv-shadow-soft3:0px 10px 20px rgba(62, 65, 86, 0.1); --gv-shadow-soft4:0px 24px 48px rgba(62, 65, 86, 0.1); --gv-shadow-soft5:0px 0px 1px rgba(62, 65, 86, 0.25), 0px 12px 24px rgba(62, 65, 86, 0.15); --gv-shadow-soft6:0px 0px 1px rgba(62, 65, 86, 0.25), 0px 12px 24px rgba(62, 65, 86, 0.15); --gv-shadow0:0px 1px 0px rgba(62, 65, 86, 0.06); --gv-shadow1:0px 0px 0px 1px rgba(62, 65, 86, 0.06), 0px 1px 3px rgba(62, 65, 86, 0.08); --gv-shadow2:0px 0px 0px 1px rgba(62, 65, 86, 0.06), 0px 6px 12px rgba(62, 65, 86, 0.08); --gv-shadow3:0px 0px 1px 1px rgba(62, 65, 86, 0.06), 0px 10px 20px rgba(62, 65, 86, 0.08); --gv-shadow4:0px 0px 1px 1px rgba(62, 65, 86, 0.06), 0px 24px 48px rgba(62, 65, 86, 0.08); --gv-shadow5:0px 0px 1px rgba(62, 65, 86, 0.25), 0px 12px 24px rgba(62, 65, 86, 0.15); --gv-shadow6:0px 0px 1px rgba(62, 65, 86, 0.25), 0px 12px 24px rgba(62, 65, 86, 0.15); --gv-shadow-dark0:0px 1px 0px rgba(62, 65, 86, 0.12); --gv-shadow-dark1:0px 1px 1px rgba(0, 0, 0, 0.06), 0px 0px 0px 1px rgba(62, 65, 86, 0.08), 0px 1px 3px rgba(62, 65, 86, 0.08); --gv-shadow-dark2:0px 0px 0px 1px rgba(62, 65, 86, 0.08), 0px 2px 4px rgba(0, 0, 0, 0.06), 0px 6px 12px rgba(62, 65, 86, 0.08); --gv-shadow-dark3:0px 0px 0px 1px rgba(62, 65, 86, 0.08), 0px 3px 6px rgba(0, 0, 0, 0.06), 0px 10px 20px rgba(62, 65, 86, 0.1); --gv-shadow-dark4:0px 0px 0px 1px rgba(62, 65, 86, 0.08), 0px 4px 8px rgba(0, 0, 0, 0.06), 0px 24px 48px rgba(62, 65, 86, 0.12); --gv-shadow-dark5:0px 0px 1px rgba(62, 65, 86, 0.375), 0px 12px 24px rgba(62, 65, 86, 0.2), 0px 20px 40px rgba(62, 65, 86, 0.1); --gv-shadow-dark6:0px 0px 1px rgba(62, 65, 86, 0.375), 0px 12px 24px rgba(62, 65, 86, 0.2), 0px 20px 40px rgba(62, 65, 86, 0.1); --gv-shadow-xdark0:0px 1px 0px rgba(62, 65, 86, 0.25); --gv-shadow-xdark1:0px 1px 1px rgba(0, 0, 0, 0.06), 0px 0px 0px 1px rgba(62, 65, 86, 0.08), 0px 1px 3px rgba(62, 65, 86, 0.25); --gv-shadow-xdark2:0px 0px 0px 1px rgba(62, 65, 86, 0.08), 0px 2px 4px rgba(0, 0, 0, 0.06), 0px 4px 12px rgba(62, 65, 86, 0.25); --gv-shadow-xdark3:0px 0px 0px 1px rgba(62, 65, 86, 0.08), 0px 3px 6px rgba(0, 0, 0, 0.06), 0px 10px 20px rgba(62, 65, 86, 0.25); --gv-shadow-xdark4:0px 6px 12px rgba(0, 0, 0, 0.06), 0px 0px 0px 1px rgba(62, 65, 86, 0.08), 0px 24px 48px rgba(62, 65, 86, 0.25); --gv-shadow-xdark5:0px 0px 1px rgba(62, 65, 86, 0.5), 0px 12px 24px rgba(62, 65, 86, 0.33), 0px 20px 40px rgba(62, 65, 86, 0.1); --gv-shadow-xdark6:0px 0px 1px rgba(62, 65, 86, 0.5), 0px 12px 24px rgba(62, 65, 86, 0.33), 0px 20px 40px rgba(62, 65, 86, 0.1); --gv-shadow-panels-color:rgba(49, 49, 57, 0.05); --gv-shadow-panels-color-darker:rgba(0, 0, 0, 0.08); --gv-transition-base:0.125s ease; --gv-transition-slow:0.25s ease; --gv-transition-fast:0.1s ease"></div><div id="reload-area" style="position: absolute;
-                display: none;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                color: #d0d0d0;"><div>Could not load network resources</div><button style="width: 100px;
-                    height: 40px;
-                    border-radius: 4px;
-                    margin-top: 20px;
-                    border: 2px solid #07e;
-                    color: #07e;
-                    font-weight: bold;
-                    font-family: sans-serif;
-                    cursor: pointer;
-                    background-color: #ffffff;" onclick="window.cleanupReload()">Retry</button></div><div id="4C7D4569_DF15_2FD4_93C9_CE424AAB1A51"></div><div id="D8605EED_D483_3837_B177_31EF71F83BAE"></div></body></html>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Namaste</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico" />
+        <!-- Font Awesome icons (free version)-->
+        <script src="https://use.fontawesome.com/releases/v5.15.1/js/all.js" crossorigin="anonymous"></script>
+        <!-- Google fonts-->
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
+        <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="css/styles.css" rel="stylesheet" />
+    </head>
+    <body id="page-top">
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
+            <div class="container">
+                <a class="navbar-brand js-scroll-trigger" href="#page-top">Bibas Pokhrel</a>
+                <button class="navbar-toggler navbar-toggler-right text-uppercase font-weight-bold bg-primary text-white rounded" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                    Menu
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#portfolio">Portfolio</a></li>
+                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#about">About</a></li>
+                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Masthead-->
+        <header class="masthead bg-primary text-white text-center">
+            <div class="container d-flex align-items-center flex-column">
+                <!-- Masthead Avatar Image-->
+                <img class="masthead-avatar mb-5" src="assets/img/avataaars.svg" alt="" />
+                <!-- Masthead Heading-->
+                <h1 class="masthead-heading text-uppercase mb-0">Bibas Pokhrel</h1>
+                <!-- Icon Divider-->
+                <div class="divider-custom divider-light">
+                    <div class="divider-custom-line"></div>
+                    <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+                    <div class="divider-custom-line"></div>
+                </div>
+                <!-- Masthead Subheading-->
+                <p class="masthead-subheading font-weight-light mb-0">Currently persuing Bachelor's in Civil Engineering</p>
+            </div>
+        </header>
+        <!-- Portfolio Section-->
+        <section class="page-section portfolio" id="portfolio">
+            <div class="container">
+                <!-- Portfolio Section Heading-->
+                <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Portfolio</h2>
+                <!-- Icon Divider-->
+                <div class="divider-custom">
+                    <div class="divider-custom-line"></div>
+                    <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+                    <div class="divider-custom-line"></div>
+                </div>
+                <!-- Portfolio Grid Items-->
+                <div class="row justify-content-center">
+                    <!-- Portfolio Item 1-->
+                    <div class="col-md-6 col-lg-4 mb-5">
+                        <div class="portfolio-item mx-auto" data-toggle="modal" data-target="#portfolioModal1">
+                            <div class="portfolio-item-caption d-flex align-items-center justify-content-center h-100 w-100">
+                                <div class="portfolio-item-caption-content text-center text-white"><i class="fas fa-plus fa-3x"></i></div>
+                            </div>
+                            <img class="img-fluid" src="assets/img/portfolio/cabin.png" alt="" />
+                        </div>
+                    </div>
+                    <!-- Portfolio Item 2-->
+                    <div class="col-md-6 col-lg-4 mb-5">
+                        <div class="portfolio-item mx-auto" data-toggle="modal" data-target="#portfolioModal2">
+                            <div class="portfolio-item-caption d-flex align-items-center justify-content-center h-100 w-100">
+                                <div class="portfolio-item-caption-content text-center text-white"><i class="fas fa-plus fa-3x"></i></div>
+                            </div>
+                            <img class="img-fluid" src="assets/img/portfolio/cake.png" alt="" />
+                        </div>
+                    </div>
+                    <!-- Portfolio Item 3-->
+                    <div class="col-md-6 col-lg-4 mb-5">
+                        <div class="portfolio-item mx-auto" data-toggle="modal" data-target="#portfolioModal3">
+                            <div class="portfolio-item-caption d-flex align-items-center justify-content-center h-100 w-100">
+                                <div class="portfolio-item-caption-content text-center text-white"><i class="fas fa-plus fa-3x"></i></div>
+                            </div>
+                            <img class="img-fluid" src="assets/img/portfolio/circus.png" alt="" />
+                        </div>
+                    </div>
+                    <!-- Portfolio Item 4-->
+                    <div class="col-md-6 col-lg-4 mb-5 mb-lg-0">
+                        <div class="portfolio-item mx-auto" data-toggle="modal" data-target="#portfolioModal4">
+                            <div class="portfolio-item-caption d-flex align-items-center justify-content-center h-100 w-100">
+                                <div class="portfolio-item-caption-content text-center text-white"><i class="fas fa-plus fa-3x"></i></div>
+                            </div>
+                            <img class="img-fluid" src="assets/img/portfolio/game.png" alt="" />
+                        </div>
+                    </div>
+                    <!-- Portfolio Item 5-->
+                    <div class="col-md-6 col-lg-4 mb-5 mb-md-0">
+                        <div class="portfolio-item mx-auto" data-toggle="modal" data-target="#portfolioModal5">
+                            <div class="portfolio-item-caption d-flex align-items-center justify-content-center h-100 w-100">
+                                <div class="portfolio-item-caption-content text-center text-white"><i class="fas fa-plus fa-3x"></i></div>
+                            </div>
+                            <img class="img-fluid" src="assets/img/portfolio/safe.png" alt="" />
+                        </div>
+                    </div>
+                    <!-- Portfolio Item 6-->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="portfolio-item mx-auto" data-toggle="modal" data-target="#portfolioModal6">
+                            <div class="portfolio-item-caption d-flex align-items-center justify-content-center h-100 w-100">
+                                <div class="portfolio-item-caption-content text-center text-white"><i class="fas fa-plus fa-3x"></i></div>
+                            </div>
+                            <img class="img-fluid" src="assets/img/portfolio/submarine.png" alt="" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- About Section-->
+        <section class="page-section bg-primary text-white mb-0" id="about">
+            <div class="container">
+                <!-- About Section Heading-->
+                <h2 class="page-section-heading text-center text-uppercase text-white">About</h2>
+                <!-- Icon Divider-->
+                <div class="divider-custom divider-light">
+                    <div class="divider-custom-line"></div>
+                    <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+                    <div class="divider-custom-line"></div>
+                </div>
+                <!-- About Section Content-->
+                <div class="row">
+                    <div class="col-lg-4 ml-auto"><p class="lead">Bibas Pokhrel. Civil Engineer, Computer Enthusiast</p></div>
+                    <div class="col-lg-4 mr-auto"><p class="lead">Website is currently under development. Notepad Edition. Hope it works ! This is a template and full development will continue as soon i'll have enough time. you know!!!</p></div>
+                </div>
+            </div>
+        </section>
+        <!-- Contact Section-->
+        <section class="page-section" id="contact">
+            <div class="container">
+                <!-- Contact Section Heading-->
+                <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Contact Me</h2>
+                <!-- Icon Divider-->
+                <div class="divider-custom">
+                    <div class="divider-custom-line"></div>
+                    <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+                    <div class="divider-custom-line"></div>
+                </div>
+                <!-- Contact Section Form-->
+                <div class="row">
+                    <div class="col-lg-8 mx-auto">
+                        <!-- To configure the contact form email address, go to mail/contact_me.php and update the email address in the PHP file on line 19.-->
+                        <form id="contactForm" name="sentMessage" novalidate="novalidate">
+                            <div class="control-group">
+                                <div class="form-group floating-label-form-group controls mb-0 pb-2">
+                                    <label>Name</label>
+                                    <input class="form-control" id="name" type="text" placeholder="Name" required="required" data-validation-required-message="Please enter your name." />
+                                    <p class="help-block text-danger"></p>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <div class="form-group floating-label-form-group controls mb-0 pb-2">
+                                    <label>Email Address</label>
+                                    <input class="form-control" id="email" type="email" placeholder="Email Address" required="required" data-validation-required-message="Please enter your email address." />
+                                    <p class="help-block text-danger"></p>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <div class="form-group floating-label-form-group controls mb-0 pb-2">
+                                    <label>Phone Number</label>
+                                    <input class="form-control" id="phone" type="tel" placeholder="Phone Number" required="required" data-validation-required-message="Please enter your phone number." />
+                                    <p class="help-block text-danger"></p>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <div class="form-group floating-label-form-group controls mb-0 pb-2">
+                                    <label>Message</label>
+                                    <textarea class="form-control" id="message" rows="5" placeholder="Message" required="required" data-validation-required-message="Please enter a message."></textarea>
+                                    <p class="help-block text-danger"></p>
+                                </div>
+                            </div>
+                            <br />
+                            <div id="success"></div>
+                            <div class="form-group"><button class="btn btn-primary btn-xl" id="sendMessageButton" type="submit">Send</button></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Footer-->
+        <footer class="footer text-center">
+            <div class="container">
+                <div class="row">
+                    <!-- Footer Location-->
+                    <div class="col-lg-4 mb-5 mb-lg-0">
+                        <h4 class="text-uppercase mb-4">Location</h4>
+                        <p class="lead mb-0">
+                           Gorkha, Nepal
+                            <br />
+                            Manakamana
+                        </p>
+                    </div>
+                    <!-- Footer Social Icons-->
+                    <div class="col-lg-4 mb-5 mb-lg-0">
+                        <h4 class="text-uppercase mb-4">Well, under development, so chill</h4>
+                        <a class="btn btn-outline-light btn-social mx-1" href="#!"><i class="fab fa-fw fa-facebook-f"></i></a>
+                        <a class="btn btn-outline-light btn-social mx-1" href="#!"><i class="fab fa-fw fa-twitter"></i></a>
+                        <a class="btn btn-outline-light btn-social mx-1" href="#!"><i class="fab fa-fw fa-linkedin-in"></i></a>
+                        <a class="btn btn-outline-light btn-social mx-1" href="#!"><i class="fab fa-fw fa-dribbble"></i></a>
+                    </div>
+                    <!-- Footer About Text-->
+                    <div class="col-lg-4">
+                        <h4 class="text-uppercase mb-4">About Me</h4>
+                        <p class="lead mb-0">
+                            Aham Brahmasmi
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- Copyright Section-->
+        <div class="copyright py-4 text-center text-white">
+            <div class="container"><small>Copyright © Bibas Pokhrel 2022</small></div>
+        </div>
+        <!-- Scroll to Top Button (Only visible on small and extra-small screen sizes)-->
+        <div class="scroll-to-top d-lg-none position-fixed">
+            <a class="js-scroll-trigger d-block text-center text-white rounded" href="#page-top"><i class="fa fa-chevron-up"></i></a>
+        </div>
+        <!-- Portfolio Modals-->
+        <!-- Portfolio Modal 1-->
+        <div class="portfolio-modal modal fade" id="portfolioModal1" tabindex="-1" role="dialog" aria-labelledby="portfolioModal1Label" aria-hidden="true">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content">
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                    </button>
+                    <div class="modal-body text-center">
+                        <div class="container">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-8">
+                                    <!-- Portfolio Modal - Title-->
+                                    <h2 class="portfolio-modal-title text-secondary text-uppercase mb-0" id="portfolioModal1Label">Log Cabin</h2>
+                                    <!-- Icon Divider-->
+                                    <div class="divider-custom">
+                                        <div class="divider-custom-line"></div>
+                                        <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+                                        <div class="divider-custom-line"></div>
+                                    </div>
+                                    <!-- Portfolio Modal - Image-->
+                                    <img class="img-fluid rounded mb-5" src="assets/img/portfolio/cabin.png" alt="" />
+                                    <!-- Portfolio Modal - Text-->
+                                    <p class="mb-5">These things are currently under development</p>
+                                    <button class="btn btn-primary" data-dismiss="modal">
+                                        <i class="fas fa-times fa-fw"></i>
+                                        Close Window
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Portfolio Modal 2-->
+        <div class="portfolio-modal modal fade" id="portfolioModal2" tabindex="-1" role="dialog" aria-labelledby="portfolioModal2Label" aria-hidden="true">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content">
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                    </button>
+                    <div class="modal-body text-center">
+                        <div class="container">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-8">
+                                    <!-- Portfolio Modal - Title-->
+                                    <h2 class="portfolio-modal-title text-secondary text-uppercase mb-0" id="portfolioModal2Label">Tasty Cake</h2>
+                                    <!-- Icon Divider-->
+                                    <div class="divider-custom">
+                                        <div class="divider-custom-line"></div>
+                                        <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+                                        <div class="divider-custom-line"></div>
+                                    </div>
+                                    <!-- Portfolio Modal - Image-->
+                                    <img class="img-fluid rounded mb-5" src="assets/img/portfolio/cake.png" alt="" />
+                                    <!-- Portfolio Modal - Text-->
+                                    <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.</p>
+                                    <button class="btn btn-primary" data-dismiss="modal">
+                                        <i class="fas fa-times fa-fw"></i>
+                                        Close Window
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Portfolio Modal 3-->
+        <div class="portfolio-modal modal fade" id="portfolioModal3" tabindex="-1" role="dialog" aria-labelledby="portfolioModal3Label" aria-hidden="true">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content">
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                    </button>
+                    <div class="modal-body text-center">
+                        <div class="container">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-8">
+                                    <!-- Portfolio Modal - Title-->
+                                    <h2 class="portfolio-modal-title text-secondary text-uppercase mb-0" id="portfolioModal3Label">Circus Tent</h2>
+                                    <!-- Icon Divider-->
+                                    <div class="divider-custom">
+                                        <div class="divider-custom-line"></div>
+                                        <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+                                        <div class="divider-custom-line"></div>
+                                    </div>
+                                    <!-- Portfolio Modal - Image-->
+                                    <img class="img-fluid rounded mb-5" src="assets/img/portfolio/circus.png" alt="" />
+                                    <!-- Portfolio Modal - Text-->
+                                    <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.</p>
+                                    <button class="btn btn-primary" data-dismiss="modal">
+                                        <i class="fas fa-times fa-fw"></i>
+                                        Close Window
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Portfolio Modal 4-->
+        <div class="portfolio-modal modal fade" id="portfolioModal4" tabindex="-1" role="dialog" aria-labelledby="portfolioModal4Label" aria-hidden="true">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content">
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                    </button>
+                    <div class="modal-body text-center">
+                        <div class="container">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-8">
+                                    <!-- Portfolio Modal - Title-->
+                                    <h2 class="portfolio-modal-title text-secondary text-uppercase mb-0" id="portfolioModal4Label">Controller</h2>
+                                    <!-- Icon Divider-->
+                                    <div class="divider-custom">
+                                        <div class="divider-custom-line"></div>
+                                        <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+                                        <div class="divider-custom-line"></div>
+                                    </div>
+                                    <!-- Portfolio Modal - Image-->
+                                    <img class="img-fluid rounded mb-5" src="assets/img/portfolio/game.png" alt="" />
+                                    <!-- Portfolio Modal - Text-->
+                                    <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.</p>
+                                    <button class="btn btn-primary" data-dismiss="modal">
+                                        <i class="fas fa-times fa-fw"></i>
+                                        Close Window
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Portfolio Modal 5-->
+        <div class="portfolio-modal modal fade" id="portfolioModal5" tabindex="-1" role="dialog" aria-labelledby="portfolioModal5Label" aria-hidden="true">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content">
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                    </button>
+                    <div class="modal-body text-center">
+                        <div class="container">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-8">
+                                    <!-- Portfolio Modal - Title-->
+                                    <h2 class="portfolio-modal-title text-secondary text-uppercase mb-0" id="portfolioModal5Label">Locked Safe</h2>
+                                    <!-- Icon Divider-->
+                                    <div class="divider-custom">
+                                        <div class="divider-custom-line"></div>
+                                        <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+                                        <div class="divider-custom-line"></div>
+                                    </div>
+                                    <!-- Portfolio Modal - Image-->
+                                    <img class="img-fluid rounded mb-5" src="assets/img/portfolio/safe.png" alt="" />
+                                    <!-- Portfolio Modal - Text-->
+                                    <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.</p>
+                                    <button class="btn btn-primary" data-dismiss="modal">
+                                        <i class="fas fa-times fa-fw"></i>
+                                        Close Window
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Portfolio Modal 6-->
+        <div class="portfolio-modal modal fade" id="portfolioModal6" tabindex="-1" role="dialog" aria-labelledby="portfolioModal6Label" aria-hidden="true">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content">
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                    </button>
+                    <div class="modal-body text-center">
+                        <div class="container">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-8">
+                                    <!-- Portfolio Modal - Title-->
+                                    <h2 class="portfolio-modal-title text-secondary text-uppercase mb-0" id="portfolioModal6Label">Submarine</h2>
+                                    <!-- Icon Divider-->
+                                    <div class="divider-custom">
+                                        <div class="divider-custom-line"></div>
+                                        <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+                                        <div class="divider-custom-line"></div>
+                                    </div>
+                                    <!-- Portfolio Modal - Image-->
+                                    <img class="img-fluid rounded mb-5" src="assets/img/portfolio/submarine.png" alt="" />
+                                    <!-- Portfolio Modal - Text-->
+                                    <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.</p>
+                                    <button class="btn btn-primary" data-dismiss="modal">
+                                        <i class="fas fa-times fa-fw"></i>
+                                        Close Window
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Third party plugin JS-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+        <!-- Contact form JS-->
+        <script src="assets/mail/jqBootstrapValidation.js"></script>
+        <script src="assets/mail/contact_me.js"></script>
+        <!-- Core theme JS-->
+        <script src="js/scripts.js"></script>
+    </body>
+</html>
