@@ -1,3 +1,1 @@
-# Thank you for watching video. You can easily download website and use it.
-
-### Source: startbootstrap.com
+La yo trial and error ma banaudai chhu so chill
