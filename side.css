@@ -1,0 +1,15 @@
+*{
+    margin: 0;
+    padding: 0;
+    font-family: 'poppins',sans-serif;
+    box-sizing: border-box;
+}
+.container{
+    width: 100%;
+    min-height: 100vh;
+    background-image: linear-gradient(rgba(162, 180, 179, 0.65),rgba(0, 67, 46, 0.65)),url(image/mountain.jpg);
+    background-size: cover;
+    background-position: center;
+    padding: 10px 8%;
+    
+}
